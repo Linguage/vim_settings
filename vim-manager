@@ -1,0 +1,807 @@
+#!/bin/bash
+
+# ============================================================================
+# Vim Manager - 统一的 Vim 环境管理工具
+# 整合了安装、配置、插件管理、启动等所有功能
+# ============================================================================
+
+# 版本信息
+VERSION="2.0"
+UPDATED="2025-06-15"
+
+# 颜色定义
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+# 获取脚本目录
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG_FILE="$SCRIPT_DIR/vimrc"
+
+# 输出函数
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+warning() { echo -e "${YELLOW}⚠ $1${NC}"; }
+error() { echo -e "${RED}✗ $1${NC}"; }
+info() { echo -e "${BLUE}ℹ $1${NC}"; }
+header() { echo -e "${PURPLE}$1${NC}"; }
+
+# 错误处理
+error_exit() {
+    error "$1"
+    exit 1
+}
+
+# 检查命令是否存在
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# 显示帮助信息
+show_help() {
+    header "🎯 Vim Manager v$VERSION"
+    echo ""
+    echo "用法: $0 <命令> [选项]"
+    echo ""
+    echo "命令:"
+    echo "  install     安装和配置 Vim 环境"
+    echo "  update      更新插件和配置"
+    echo "  plugins     管理插件 (list/add/remove/clean)"
+    echo "  themes      管理主题 (list/install/switch/current)"
+    echo "  config      配置管理 (link/backup/restore)"
+    echo "  start       启动 MacVim"
+    echo "  status      检查环境状态"
+    echo "  help        显示此帮助信息"
+    echo ""
+    echo "示例:"
+    echo "  $0 install           # 完整安装"
+    echo "  $0 plugins list      # 列出已安装插件"
+    echo "  $0 themes install    # 安装所有主题"
+    echo "  $0 themes switch     # 切换主题"
+    echo "  $0 config link       # 链接配置文件"
+    echo "  $0 start             # 启动 MacVim"
+    echo ""
+}
+
+# 检测系统环境
+detect_environment() {
+    # 操作系统检测
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        OS="macOS"
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        OS="Linux"
+    else
+        OS="Unknown"
+    fi
+    
+    # Vim 类型检测
+    VIM_TYPE=""
+    if command_exists nvim; then
+        VIM_TYPE="neovim"
+        VIM_CMD="nvim"
+    elif command_exists vim; then
+        VIM_TYPE="vim"
+        VIM_CMD="vim"
+    fi
+    
+    # MacVim 检测
+    if [[ "$OS" == "macOS" ]] && command_exists mvim; then
+        MACVIM_AVAILABLE=true
+    else
+        MACVIM_AVAILABLE=false
+    fi
+}
+
+# 安装环境
+install_environment() {
+    header "🚀 安装 Vim 环境"
+    echo ""
+    
+    detect_environment
+    
+    info "检测到的环境:"
+    echo "  操作系统: $OS"
+    echo "  Vim 类型: ${VIM_TYPE:-未安装}"
+    echo "  MacVim: $([ "$MACVIM_AVAILABLE" = true ] && echo "可用" || echo "不可用")"
+    echo ""
+    
+    # 选择安装方案
+    echo "请选择安装方案:"
+    echo "1. 基础安装 (vim + 基础插件)"
+    echo "2. 完整安装 (所有插件 + 主题)"
+    echo "3. MacVim 专用安装"
+    echo "4. 自定义安装"
+    echo ""
+    read -p "请选择 [1-4]: " choice
+    
+    case $choice in
+        1) install_basic ;;
+        2) install_complete ;;
+        3) install_macvim ;;
+        4) install_custom ;;
+        *) error "无效选择" && exit 1 ;;
+    esac
+}
+
+# 基础安装
+install_basic() {
+    info "开始基础安装..."
+    
+    # 检查并安装 Vim
+    if ! command_exists vim; then
+        info "正在安装 Vim..."
+        if [[ "$OS" == "macOS" ]]; then
+            if command_exists brew; then
+                brew install vim || error_exit "Vim 安装失败"
+            else
+                error_exit "请先安装 Homebrew"
+            fi
+        fi
+    fi
+    
+    # 链接配置文件
+    link_config
+    
+    # 安装基础插件
+    install_basic_plugins
+    
+    success "基础安装完成!"
+}
+
+# 完整安装
+install_complete() {
+    info "开始完整安装..."
+    
+    # 执行基础安装
+    install_basic
+    
+    # 安装所有插件
+    install_all_plugins
+    
+    # 安装主题
+    install_themes
+    
+    # 安装字体 (如果是 macOS)
+    if [[ "$OS" == "macOS" ]]; then
+        install_fonts
+    fi
+    
+    success "完整安装完成!"
+}
+
+# MacVim 专用安装
+install_macvim() {
+    if [[ "$OS" != "macOS" ]]; then
+        error_exit "MacVim 只支持 macOS 系统"
+    fi
+    
+    info "开始 MacVim 安装..."
+    
+    # 安装 MacVim
+    if ! command_exists mvim; then
+        info "正在安装 MacVim..."
+        if command_exists brew; then
+            brew install --cask macvim || error_exit "MacVim 安装失败"
+        else
+            error_exit "请先安装 Homebrew"
+        fi
+    fi
+    
+    # 完整安装
+    install_complete
+    
+    success "MacVim 安装完成!"
+}
+
+# 链接配置文件
+link_config() {
+    info "正在链接配置文件..."
+    
+    # 备份现有配置
+    if [[ -f "$HOME/.vimrc" ]]; then
+        mv "$HOME/.vimrc" "$HOME/.vimrc.backup.$(date +%Y%m%d_%H%M%S)"
+        warning "已备份现有的 .vimrc"
+    fi
+    
+    # 创建软链接
+    ln -sf "$CONFIG_FILE" "$HOME/.vimrc"
+    success "已链接配置文件: $CONFIG_FILE -> ~/.vimrc"
+    
+    # MacVim 配置
+    if [[ "$MACVIM_AVAILABLE" = true ]]; then
+        ln -sf "$CONFIG_FILE" "$HOME/.gvimrc"
+        success "已链接 MacVim 配置文件"
+    fi
+}
+
+# 安装基础插件
+install_basic_plugins() {
+    info "正在安装基础插件..."
+    
+    local plugins=(
+        "https://github.com/preservim/nerdtree.git"
+        "https://github.com/vim-airline/vim-airline.git"
+        "https://github.com/tpope/vim-commentary.git"
+        "https://github.com/tpope/vim-surround.git"
+    )
+    
+    for plugin in "${plugins[@]}"; do
+        install_plugin_from_git "$plugin"
+    done
+    
+    success "基础插件安装完成"
+}
+
+# 安装所有插件
+install_all_plugins() {
+    info "正在安装所有插件..."
+    
+    local plugins=(
+        "https://github.com/preservim/nerdtree.git"
+        "https://github.com/vim-airline/vim-airline.git"
+        "https://github.com/vim-airline/vim-airline-themes.git"
+        "https://github.com/tpope/vim-commentary.git"
+        "https://github.com/tpope/vim-surround.git"
+        "https://github.com/tpope/vim-fugitive.git"
+        "https://github.com/sheerun/vim-polyglot.git"
+        "https://github.com/tpope/vim-sensible.git"
+        "https://github.com/jiangmiao/auto-pairs.git"
+    )
+    
+    for plugin in "${plugins[@]}"; do
+        install_plugin_from_git "$plugin"
+    done
+    
+    success "所有插件安装完成"
+}
+
+# 从 Git 安装插件
+install_plugin_from_git() {
+    local git_url="$1"
+    local plugin_name=$(basename "$git_url" .git)
+    local plugin_dir="$SCRIPT_DIR/plugins/$plugin_name"
+    
+    if [[ -d "$plugin_dir" ]]; then
+        warning "插件 $plugin_name 已存在，跳过安装"
+        return
+    fi
+    
+    info "正在安装插件: $plugin_name"
+    if git clone "$git_url" "$plugin_dir" >/dev/null 2>&1; then
+        success "已安装: $plugin_name"
+    else
+        error "安装失败: $plugin_name"
+    fi
+}
+
+# 安装字体
+install_fonts() {
+    info "正在安装 Cascadia Code 字体..."
+    
+    if fc-list | grep -i "cascadia" >/dev/null 2>&1; then
+        success "Cascadia Code 字体已安装"
+        return
+    fi
+    
+    # 使用 brew 安装字体
+    if command_exists brew; then
+        brew tap homebrew/cask-fonts 2>/dev/null
+        brew install --cask font-cascadia-code 2>/dev/null
+        success "已安装 Cascadia Code 字体"
+    else
+        warning "请手动安装 Cascadia Code 字体"
+    fi
+}
+
+# 安装主题
+install_themes() {
+    info "正在安装 Vim 主题..."
+    
+    local themes_dir="$SCRIPT_DIR/colors"
+    
+    # 确保主题目录存在
+    if [[ ! -d "$themes_dir" ]]; then
+        mkdir -p "$themes_dir"
+    fi
+    
+    # 定义主题列表 (主题名:下载URL)
+    local themes=(
+        "gruvbox:https://raw.githubusercontent.com/morhetz/gruvbox/master/colors/gruvbox.vim"
+        "molokai:https://raw.githubusercontent.com/tomasr/molokai/master/colors/molokai.vim"
+        "solarized:https://raw.githubusercontent.com/altercation/vim-colors-solarized/master/colors/solarized.vim"
+        "dracula:https://raw.githubusercontent.com/dracula/vim/master/colors/dracula.vim"
+        "onedark:https://raw.githubusercontent.com/joshdick/onedark.vim/main/colors/onedark.vim"
+        "nord:https://raw.githubusercontent.com/arcticicestudio/nord-vim/develop/colors/nord.vim"
+        "tokyonight:https://raw.githubusercontent.com/folke/tokyonight.nvim/main/extras/vim/tokyonight_night.vim"
+        "papercolor:https://raw.githubusercontent.com/NLKNguyen/papercolor-theme/master/colors/PaperColor.vim"
+    )
+    
+    local installed_count=0
+    local failed_count=0
+    local max_retries=3
+    
+    for theme_entry in "${themes[@]}"; do
+        local theme_name="${theme_entry%%:*}"
+        local theme_url="${theme_entry##*:}"
+        local theme_file="$themes_dir/${theme_name}.vim"
+        
+        if [[ -f "$theme_file" ]]; then
+            warning "主题 $theme_name 已存在，跳过下载"
+            continue
+        fi
+        
+        info "正在下载主题: $theme_name"
+        local success=false
+        local retry_count=0
+        
+        # 重试下载逻辑
+        while [[ $retry_count -lt $max_retries ]] && [[ "$success" == "false" ]]; do
+            if [[ $retry_count -gt 0 ]]; then
+                warning "重试下载 $theme_name (第 $((retry_count + 1)) 次尝试)"
+                sleep 1  # 短暂延迟
+            fi
+            
+            if curl -s -L "$theme_url" -o "$theme_file" 2>/dev/null; then
+                if [[ -s "$theme_file" ]]; then
+                    success="true"
+                    success "已安装主题: $theme_name"
+                    ((installed_count++))
+                else
+                    rm -f "$theme_file"
+                    warning "下载的文件为空: $theme_name"
+                fi
+            else
+                warning "网络请求失败: $theme_name"
+            fi
+            
+            ((retry_count++))
+        done
+        
+        # 如果所有重试都失败了
+        if [[ "$success" == "false" ]]; then
+            error "主题 $theme_name 下载失败 (已重试 $max_retries 次)，跳过安装"
+            ((failed_count++))
+        fi
+    done
+    
+    # 创建一个简单的主题选择器
+    create_theme_switcher
+    
+    # 显示安装结果
+    success "主题安装完成! 共成功安装 $installed_count 个主题"
+    if [[ $failed_count -gt 0 ]]; then
+        warning "有 $failed_count 个主题安装失败"
+        info "失败的主题可能是由于网络问题或上游仓库变更导致"
+        info "您可以稍后重新运行 './vim-manager themes install' 再次尝试"
+    fi
+    info "使用 './vim-manager themes' 来管理主题"
+}
+
+# 创建主题切换器
+create_theme_switcher() {
+    local themes_dir="$SCRIPT_DIR/colors"
+    local switcher_file="$SCRIPT_DIR/switch_theme.vim"
+    
+    cat > "$switcher_file" << 'EOF'
+" Vim 主题切换器
+" 使用方法: :source switch_theme.vim 然后运行 :SwitchTheme
+
+function! SwitchTheme()
+    let themes = []
+    let colors_dir = expand('<sfile>:p:h') . '/colors'
+    
+    " 获取所有主题文件
+    for file in split(glob(colors_dir . '/*.vim'), '\n')
+        let theme_name = fnamemodify(file, ':t:r')
+        call add(themes, theme_name)
+    endfor
+    
+    if empty(themes)
+        echo "未找到主题文件"
+        return
+    endif
+    
+    " 显示主题列表
+    echo "可用主题:"
+    for i in range(len(themes))
+        echo (i+1) . ". " . themes[i]
+    endfor
+    
+    " 获取用户选择
+    let choice = input("请选择主题 [1-" . len(themes) . "]: ")
+    let choice_num = str2nr(choice)
+    
+    if choice_num > 0 && choice_num <= len(themes)
+        let selected_theme = themes[choice_num - 1]
+        execute 'colorscheme ' . selected_theme
+        echo "\n已切换到主题: " . selected_theme
+        
+        " 保存设置到 vimrc
+        let vimrc_path = expand('~/.vimrc')
+        if filereadable(vimrc_path)
+            let lines = readfile(vimrc_path)
+            let found = 0
+            for i in range(len(lines))
+                if lines[i] =~ '^\s*colorscheme\s'
+                    let lines[i] = 'colorscheme ' . selected_theme
+                    let found = 1
+                    break
+                endif
+            endfor
+            if !found
+                call add(lines, 'colorscheme ' . selected_theme)
+            endif
+            call writefile(lines, vimrc_path)
+            echo "已保存主题设置到 ~/.vimrc"
+        endif
+    else
+        echo "无效选择"
+    endif
+endfunction
+
+command! SwitchTheme call SwitchTheme()
+EOF
+
+    success "已创建主题切换器: $switcher_file"
+    info "在 Vim 中运行 ':source switch_theme.vim' 然后 ':SwitchTheme' 来切换主题"
+}
+# 插件管理
+manage_plugins() {
+    local action="$1"
+    
+    case "$action" in
+        "list"|""|"-l")
+            list_plugins
+            ;;
+        "add"|"-a")
+            shift
+            add_plugin "$@"
+            ;;
+        "remove"|"-r")
+            shift
+            remove_plugin "$@"
+            ;;
+        "update"|"-u")
+            update_plugins
+            ;;
+        "clean"|"-c")
+            clean_plugins
+            ;;
+        *)
+            echo "插件管理用法:"
+            echo "  $0 plugins list         # 列出已安装插件"
+            echo "  $0 plugins add <url>    # 添加插件"
+            echo "  $0 plugins remove <名称> # 删除插件"
+            echo "  $0 plugins update       # 更新所有插件"
+            echo "  $0 plugins clean        # 清理无用文件"
+            ;;
+    esac
+}
+
+# 列出插件
+list_plugins() {
+    header "📦 已安装的插件"
+    echo ""
+    
+    local plugin_dir="$SCRIPT_DIR/plugins"
+    if [[ ! -d "$plugin_dir" ]]; then
+        warning "插件目录不存在"
+        return
+    fi
+    
+    local count=0
+    for dir in "$plugin_dir"/*/; do
+        if [[ -d "$dir" ]]; then
+            local name=$(basename "$dir")
+            local version=""
+            
+            # 尝试获取版本信息
+            if [[ -d "$dir/.git" ]]; then
+                version=$(cd "$dir" && git describe --tags --abbrev=0 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)
+            fi
+            
+            printf "  %-20s %s\n" "$name" "${version:-(unknown)}"
+            ((count++))
+        fi
+    done
+    
+    if [[ $count -eq 0 ]]; then
+        warning "未安装任何插件"
+    else
+        echo ""
+        success "总计: $count 个插件"
+    fi
+}
+
+# 更新插件
+update_plugins() {
+    info "正在更新所有插件..."
+    
+    local plugin_dir="$SCRIPT_DIR/plugins"
+    local updated=0
+    
+    for dir in "$plugin_dir"/*/; do
+        if [[ -d "$dir/.git" ]]; then
+            local name=$(basename "$dir")
+            info "更新 $name..."
+            
+            if (cd "$dir" && git pull >/dev/null 2>&1); then
+                success "已更新: $name"
+                ((updated++))
+            else
+                error "更新失败: $name"
+            fi
+        fi
+    done
+    
+    success "已更新 $updated 个插件"
+}
+
+# 启动 MacVim
+start_macvim() {
+    if [[ "$OS" != "macOS" ]]; then
+        error_exit "MacVim 只支持 macOS 系统"
+    fi
+    
+    if ! command_exists mvim; then
+        error_exit "MacVim 未安装，请先运行: $0 install"
+    fi
+    
+    info "正在启动 MacVim..."
+    
+    # 检查配置文件
+    if [[ ! -f "$HOME/.vimrc" ]]; then
+        warning "配置文件不存在，是否先链接配置？[y/N]"
+        read -r response
+        if [[ "$response" =~ ^[Yy]$ ]]; then
+            link_config
+        fi
+    fi
+    
+    # 启动 MacVim
+    mvim "$@" &
+    success "MacVim 已启动"
+}
+
+# 检查状态
+check_status() {
+    header "🔍 环境状态检查"
+    echo ""
+    
+    detect_environment
+    
+    # 系统信息
+    echo "系统信息:"
+    echo "  操作系统: $OS"
+    echo "  Vim 类型: ${VIM_TYPE:-未安装}"
+    echo "  MacVim: $([ "$MACVIM_AVAILABLE" = true ] && echo "✓ 可用" || echo "✗ 不可用")"
+    echo ""
+    
+    # 配置文件状态
+    echo "配置文件:"
+    if [[ -f "$HOME/.vimrc" ]]; then
+        if [[ -L "$HOME/.vimrc" ]]; then
+            local target=$(readlink "$HOME/.vimrc")
+            echo "  ~/.vimrc: ✓ 已链接 -> $target"
+        else
+            echo "  ~/.vimrc: ⚠ 存在但未链接"
+        fi
+    else
+        echo "  ~/.vimrc: ✗ 不存在"
+    fi
+    
+    # 插件状态
+    echo ""
+    list_plugins
+    
+    # 字体状态 (macOS)
+    if [[ "$OS" == "macOS" ]]; then
+        echo ""
+        echo "字体状态:"
+        if fc-list | grep -i "cascadia" >/dev/null 2>&1; then
+            echo "  Cascadia Code: ✓ 已安装"
+        else
+            echo "  Cascadia Code: ✗ 未安装"
+        fi
+    fi
+}
+
+# 主题管理
+manage_themes() {
+    local action="$1"
+    
+    case "$action" in
+        "list"|""|"-l")
+            list_themes
+            ;;
+        "install"|"-i")
+            install_themes
+            ;;
+        "switch"|"-s")
+            switch_theme_cli
+            ;;
+        "current"|"-c")
+            show_current_theme
+            ;;
+        *)
+            echo "主题管理用法:"
+            echo "  $0 themes list          # 列出已安装主题"
+            echo "  $0 themes install       # 安装所有主题"
+            echo "  $0 themes switch        # 交互式切换主题"
+            echo "  $0 themes current       # 显示当前主题"
+            ;;
+    esac
+}
+
+# 列出主题
+list_themes() {
+    header "🎨 已安装的主题"
+    echo ""
+    
+    local themes_dir="$SCRIPT_DIR/colors"
+    if [[ ! -d "$themes_dir" ]]; then
+        warning "主题目录不存在"
+        return
+    fi
+    
+    local count=0
+    for theme_file in "$themes_dir"/*.vim; do
+        if [[ -f "$theme_file" ]]; then
+            local name=$(basename "$theme_file" .vim)
+            local size=$(wc -l < "$theme_file" 2>/dev/null || echo "0")
+            printf "  %-15s %s 行\n" "$name" "$size"
+            ((count++))
+        fi
+    done
+    
+    if [[ $count -eq 0 ]]; then
+        warning "未安装任何主题"
+        echo ""
+        info "运行 '$0 themes install' 来安装主题"
+    else
+        echo ""
+        success "总计: $count 个主题"
+    fi
+}
+
+# 显示当前主题
+show_current_theme() {
+    local vimrc_path="$HOME/.vimrc"
+    
+    if [[ ! -f "$vimrc_path" ]]; then
+        warning "配置文件不存在: $vimrc_path"
+        return
+    fi
+    
+    local current_theme=$(grep -E '^\s*colorscheme\s+' "$vimrc_path" | head -1 | awk '{print $2}')
+    
+    if [[ -n "$current_theme" ]]; then
+        success "当前主题: $current_theme"
+    else
+        warning "未设置主题或使用默认主题"
+    fi
+}
+
+# 命令行主题切换
+switch_theme_cli() {
+    local themes_dir="$SCRIPT_DIR/colors"
+    
+    if [[ ! -d "$themes_dir" ]]; then
+        error "主题目录不存在，请先运行: $0 themes install"
+        return
+    fi
+    
+    local themes=()
+    for theme_file in "$themes_dir"/*.vim; do
+        if [[ -f "$theme_file" ]]; then
+            themes+=($(basename "$theme_file" .vim))
+        fi
+    done
+    
+    if [[ ${#themes[@]} -eq 0 ]]; then
+        error "未找到任何主题文件"
+        return
+    fi
+    
+    header "🎨 主题切换"
+    echo ""
+    echo "可用主题:"
+    for i in "${!themes[@]}"; do
+        printf "%2d. %s\n" $((i+1)) "${themes[i]}"
+    done
+    
+    echo ""
+    read -p "请选择主题 [1-${#themes[@]}]: " choice
+    
+    if [[ "$choice" =~ ^[0-9]+$ ]] && [[ $choice -ge 1 ]] && [[ $choice -le ${#themes[@]} ]]; then
+        local selected_theme="${themes[$((choice-1))]}"
+        set_theme "$selected_theme"
+    else
+        error "无效选择"
+    fi
+}
+
+# 设置主题
+set_theme() {
+    local theme_name="$1"
+    local vimrc_path="$HOME/.vimrc"
+    local themes_dir="$SCRIPT_DIR/colors"
+    
+    # 检查主题文件是否存在
+    if [[ ! -f "$themes_dir/${theme_name}.vim" ]]; then
+        error "主题文件不存在: ${theme_name}.vim"
+        return
+    fi
+    
+    if [[ ! -f "$vimrc_path" ]]; then
+        error "配置文件不存在: $vimrc_path"
+        return
+    fi
+    
+    # 备份配置文件
+    cp "$vimrc_path" "${vimrc_path}.backup.$(date +%Y%m%d_%H%M%S)"
+    
+    # 更新主题设置
+    if grep -q "^colorscheme" "$vimrc_path"; then
+        # 替换现有的主题设置
+        sed -i.bak "s/^colorscheme.*/colorscheme $theme_name/" "$vimrc_path"
+        rm -f "${vimrc_path}.bak"
+    else
+        # 添加主题设置
+        echo "colorscheme $theme_name" >> "$vimrc_path"
+    fi
+    
+    success "已切换到主题: $theme_name"
+    info "重新启动 Vim 生效，或在 Vim 中运行 ':colorscheme $theme_name'"
+}
+
+# 主函数
+main() {
+    case "${1:-help}" in
+        "install"|"i")
+            install_environment
+            ;;
+        "update"|"u")
+            update_plugins
+            ;;
+        "plugins"|"p")
+            shift
+            manage_plugins "$@"
+            ;;
+        "config"|"c")
+            case "$2" in
+                "link") link_config ;;
+                *) link_config ;;
+            esac
+            ;;
+        "start"|"s")
+            shift
+            start_macvim "$@"
+            ;;
+        "status"|"st")
+            check_status
+            ;;
+        "themes"|"t")
+            shift
+            manage_themes "$@"
+            ;;
+        "help"|"h"|"-h"|"--help")
+            show_help
+            ;;
+        "version"|"v"|"-v"|"--version")
+            echo "Vim Manager v$VERSION (Updated: $UPDATED)"
+            ;;
+        *)
+            error "未知命令: $1"
+            echo ""
+            show_help
+            exit 1
+            ;;
+    esac
+}
+
+# 运行主函数
+main "$@"
