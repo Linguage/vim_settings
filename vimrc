@@ -12,6 +12,9 @@ execute 'source ' . s:config_dir . '/settings/basic.vim'
 " 加载 UI 和主题配置
 execute 'source ' . s:config_dir . '/settings/ui.vim'
 
+" 加载颜色主题配置
+execute 'source ' . s:config_dir . '/settings/colorscheme.vim'
+
 " 加载快捷键映射
 execute 'source ' . s:config_dir . '/settings/mappings.vim'
 

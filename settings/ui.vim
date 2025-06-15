@@ -7,8 +7,8 @@ if has('termguicolors')
     set termguicolors
 endif
 
-" 设置背景为暗色
-set background=dark
+" 加载颜色方案配置
+source ~/Documents/vim_settings/settings/colorscheme.vim
 
 " 显示不可见字符
 set list
@@ -17,7 +17,7 @@ set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×
 " 设置分割线
 set fillchars+=vert:│
 
-" 启用通配符菜单
+" 启用通派符菜单
 set wildmenu
 set wildmode=longest:full,full
 
