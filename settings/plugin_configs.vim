@@ -16,15 +16,16 @@ let NERDTreeAutoDeleteBuffer=1
 let NERDTreeMinimalUI=1
 let NERDTreeDirArrows=1
 
-" 启动时自动打开NERDTree
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" 默认不自动打开NERDTree
+" 注释掉自动打开NERDTree的行
+" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
 " 关闭vim时自动关闭NERDTree
 autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-" NERDTree 快捷键
-nmap <leader>n :NERDTreeToggle<CR>
-nmap <leader>f :NERDTreeFind<CR>
+" NERDTree 快捷键 - 使用<leader>n切换NERDTree
+nnoremap <silent> <leader>n :NERDTreeToggle<CR>
+noremap <silent> <leader>f :NERDTreeFind<CR>
 
 " 在新标签页中打开文件
 let NERDTreeMapOpenInTab='<ENTER>'
