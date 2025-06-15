@@ -94,26 +94,8 @@ set ttimeoutlen=50           " 键码超时时间
 set lazyredraw               " 延迟重绘
 set ttyfast                  " 快速终端连接
 
-" 颜色主题设置
-" ============================================================================
-if has('termguicolors') && (g:is_gui || $COLORTERM ==# 'truecolor')
-    set termguicolors        " 启用真彩色
-endif
-
-" 设置颜色主题（按优先级尝试）
+" 配置目录变量（用于插件管理）
 let s:config_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
-try
-    if filereadable(s:config_dir . '/colors/gruvbox.vim')
-        colorscheme gruvbox
-        set background=dark
-    elseif filereadable(s:config_dir . '/colors/molokai.vim')
-        colorscheme molokai
-    else
-        colorscheme desert
-    endif
-catch
-    colorscheme default
-endtry
 
 " GUI 专用设置 (MacVim, GVim 等)
 " ============================================================================
@@ -264,11 +246,6 @@ if isdirectory(s:config_dir . '/plugins/vim-airline')
     let g:airline#extensions#tabline#formatter = 'unique_tail'
     let g:airline_powerline_fonts = 0
     
-    " 主题设置
-    if isdirectory(s:config_dir . '/plugins/vim-airline-themes')
-        let g:airline_theme = 'dark'
-    endif
-    
     " 自定义符号
     if !exists('g:airline_symbols')
         let g:airline_symbols = {}
@@ -326,4 +303,3 @@ nnoremap <Leader>tn :call ToggleNumber()<CR>
 " 配置版本信息
 let g:vimrc_version = "2.0-unified"
 let g:vimrc_updated = "2025-06-15"
-colorscheme dracula
