@@ -3,8 +3,8 @@
 " ============================================================================
 
 " 设置Leader键
-let mapleader = ","
-let g:mapleader = ","
+let mapleader = " "
+let g:mapleader = " "
 
 " 快速保存
 nmap <leader>w :w!<cr>
