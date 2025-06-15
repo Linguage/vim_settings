@@ -2,8 +2,30 @@
 " 插件配置
 " ============================================================================
 
+" ----------------------------------------------------------------------------
+" Vim-Airline 基础配置
+" ----------------------------------------------------------------------------
+
+" 启用 tabline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
+
+" 使用最基础的主题
+let g:airline_theme = 'dark'
+
+" 禁用可能有问题的功能，先确保基本工作
+let g:airline#extensions#branch#enabled = 0
+let g:airline#extensions#syntastic#enabled = 0
+let g:airline#extensions#hunks#enabled = 0
+let g:airline#extensions#whitespace#enabled = 0
+
+" 不自定义符号，使用默认
+" let g:airline_symbols = {}
+
+" ----------------------------------------------------------------------------
 " NERDTree 配置
 " ----------------------------------------------------------------------------
+
 " NERDTree 基本设置
 let NERDTreeShowHidden=1
 let NERDTreeIgnore=['\.pyc$', '\~$', '\.swp$', '\.DS_Store$']

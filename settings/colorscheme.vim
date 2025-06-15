@@ -70,5 +70,4 @@ noremap <Leader>t :call SelectColorScheme()<CR>
 " 可选：也可以使用 <Leader>th (theme) 作为快捷键
 noremap <Leader>th :call SelectColorScheme()<CR>
 
-" Show the current color scheme in the status line
-set statusline=%<%f\ %h%m%r%{exists('g:colors_name')?\ '\ \|\ '.\ 'Theme:\ '.\ g:colors_name\ .'\ ':'\ '}" Display current theme in status line
+" 主题信息将通过 airline 状态栏显示，无需单独设置 statusline
