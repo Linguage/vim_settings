@@ -25,6 +25,12 @@ set wildmode=longest:full,full
 set scrolloff=5
 set sidescrolloff=5
 
+" 设置字体 (仅适用于 GUI 版本如 MacVim/GVim)
+if has("gui_running")
+    " MacVim/GVim 字体设置
+    set guifont=Menlo\ Regular:h14
+endif
+
 " 设置颜色主题
 try
     colorscheme desert
