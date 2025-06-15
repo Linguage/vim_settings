@@ -1,305 +1,446 @@
 " ============================================================================
-" 统一 Vim 配置文件 (vimrc)
-" 智能检测环境，自动适配 vim/nvim/macvim，terminal/GUI
+" Vim 基础配置文件
 " ============================================================================
 
-" 环境检测
 " ============================================================================
-let g:is_nvim = has('nvim')
-let g:is_vim8 = v:version >= 800
-let g:is_gui = has('gui_running') || has('gui_macvim') || exists('g:GuiLoaded')
-let g:is_macvim = has('gui_macvim')
-let g:is_terminal = !g:is_gui
-
-" 基础设置
+" 第一阶段：基础配置（无插件）
 " ============================================================================
-set nocompatible              " 关闭 vi 兼容模式
-filetype plugin indent on    " 启用文件类型检测、插件和缩进
-syntax enable                 " 启用语法高亮
 
-" 显示设置
-" ============================================================================
-set number                    " 显示行号
-set relativenumber           " 显示相对行号
-set cursorline               " 高亮当前行
-set showcmd                  " 显示命令
-set showmode                 " 显示当前模式
-set ruler                    " 显示光标位置
-set laststatus=2             " 总是显示状态栏
-set wrap                     " 自动换行
-set linebreak                " 在单词边界换行
-set showmatch                " 显示匹配的括号
-set matchtime=2              " 匹配括号高亮时间
+" ----------------------------------------------------------------------------
+" 基本编辑器选项
+" ----------------------------------------------------------------------------
 
-" 界面美化设置
-set fillchars=vert:│,fold:·,diff:╱  " 细分割线
-set fillchars+=eob:\          " 隐藏空行的波浪号 (~)
+" 启用语法高亮
+syntax enable
+syntax on
 
+" 显示行号
+set number
+set relativenumber
+
+" 高亮当前行
+set cursorline
+
+" 显示命令
+set showcmd
+
+" 显示匹配的括号
+set showmatch
+
+" 启用鼠标支持
+set mouse=a
+
+" 显示状态栏
+set laststatus=2
+
+" 显示标尺
+set ruler
+
+" 设置命令行高度
+set cmdheight=1
+
+" 不兼容vi模式
+set nocompatible
+
+" 启用文件类型检测
+filetype on
+filetype plugin on
+filetype indent on
+
+" ----------------------------------------------------------------------------
+" 缩进和制表符设置
+" ----------------------------------------------------------------------------
+
+" 制表符宽度
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+
+" 使用空格替代制表符
+set expandtab
+
+" 智能缩进
+set smartindent
+set autoindent
+
+" 智能制表符
+set smarttab
+
+" ----------------------------------------------------------------------------
 " 搜索设置
-" ============================================================================
-set hlsearch                 " 高亮搜索结果
-set incsearch                " 实时搜索
-set ignorecase               " 搜索时忽略大小写
-set smartcase                " 智能大小写搜索
-set wrapscan                 " 搜索到文件末尾时重新从开头搜索
+" ----------------------------------------------------------------------------
 
-" 编辑设置
-" ============================================================================
-set tabstop=4                " Tab 显示宽度
-set shiftwidth=4             " 自动缩进宽度
-set expandtab                " 使用空格替代 Tab
-set autoindent               " 自动缩进
-set smartindent              " 智能缩进
-set backspace=indent,eol,start " 退格键功能
-set whichwrap=b,s,h,l,<,>,[,] " 光标跨行移动
+" 高亮搜索结果
+set hlsearch
 
-" 文件和备份设置
-" ============================================================================
-set autoread                 " 文件被外部修改时自动读取
-set autowrite                " 自动保存
-set backup                   " 创建备份文件
-set backupdir=~/.vim/backup  " 备份文件目录
-set directory=~/.vim/swap    " 交换文件目录
-set undofile                 " 启用持久化撤销
-set undodir=~/.vim/undo      " 撤销文件目录
+" 实时搜索
+set incsearch
 
-" 创建必要的目录
-if !isdirectory(expand("~/.vim/backup"))
-    call mkdir(expand("~/.vim/backup"), "p")
+" 忽略大小写搜索兼容智能搜索
+set ignorecase
+set smartcase
+
+" 搜索时循环查找
+set wrapscan
+
+" ----------------------------------------------------------------------------
+" 折叠设置
+" ----------------------------------------------------------------------------
+
+" 启用折叠
+set foldenable
+
+" 基于缩进折叠
+set foldmethod=indent
+
+" 启动时不折叠
+set foldlevelstart=99
+
+" ----------------------------------------------------------------------------
+" 外观设置
+" ----------------------------------------------------------------------------
+
+" 启用真彩色支持
+if has('termguicolors')
+    set termguicolors
 endif
-if !isdirectory(expand("~/.vim/swap"))
-    call mkdir(expand("~/.vim/swap"), "p")
-endif
-if !isdirectory(expand("~/.vim/undo"))
-    call mkdir(expand("~/.vim/undo"), "p")
-endif
 
-" 通用界面设置
-" ============================================================================
-set wildmenu                 " 命令行补全菜单
-set wildmode=longest:full,full " 补全模式
-set scrolloff=8              " 垂直滚动边距
-set sidescrolloff=8          " 水平滚动边距
-set clipboard=unnamed        " 使用系统剪贴板
-set mouse=a                  " 启用鼠标支持
-set encoding=utf-8           " 文件编码
-set fileencoding=utf-8       " 文件保存编码
-set termencoding=utf-8       " 终端编码
+" 设置背景为暗色
+set background=dark
 
-" 性能设置
-" ============================================================================
-set updatetime=300           " 更新时间
-set timeoutlen=500           " 键盘超时时间
-set ttimeoutlen=50           " 键码超时时间
-set lazyredraw               " 延迟重绘
-set ttyfast                  " 快速终端连接
+" 显示不可见字符
+set list
+set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×
 
-" 配置目录变量（用于插件管理）
-let s:config_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
+" 设置分割线
+set fillchars+=vert:│
 
-" GUI 专用设置 (MacVim, GVim 等)
-" ============================================================================
-if g:is_gui
-    " 字体设置
-    if g:is_macvim
-        " MacVim 字体设置
-        set guifont=Cascadia\ Code:h15
-        " 备用字体
-        " set guifont=SF\ Mono:h15
-        " set guifont=Monaco:h14
-        " set guifont=Menlo:h14
-        set guifontwide=PingFang\ SC:h15  " 中文字体
-    else
-        " 其他 GUI 的字体设置
-        set guifont=Cascadia\ Code\ 12
+" 启用通配符菜单
+set wildmenu
+set wildmode=longest:full,full
+
+" 滚动时保持上下文
+set scrolloff=5
+set sidescrolloff=5
+
+" ----------------------------------------------------------------------------
+" 快捷键映射
+" ----------------------------------------------------------------------------
+
+" 设置Leader键
+let mapleader = ","
+let g:mapleader = ","
+
+" 快速保存
+nmap <leader>w :w!<cr>
+
+" 快速退出
+nmap <leader>q :q<cr>
+nmap <leader>Q :qa!<cr>
+
+" 快速编辑vimrc
+nmap <leader>e :edit $MYVIMRC<cr>
+
+" 重新加载vimrc
+nmap <leader>r :source $MYVIMRC<cr>
+
+" 清除搜索高亮
+nmap <leader>/ :nohlsearch<cr>
+
+" 窗口切换
+nmap <C-h> <C-w>h
+nmap <C-j> <C-w>j
+nmap <C-k> <C-w>k
+nmap <C-l> <C-w>l
+
+" 调整窗口大小
+nmap <leader>= <C-w>=
+nmap <leader>+ :resize +5<cr>
+nmap <leader>- :resize -5<cr>
+nmap <leader>< :vertical resize -5<cr>
+nmap <leader>> :vertical resize +5<cr>
+
+" 快速移动
+nmap <leader>j 10j
+nmap <leader>k 10k
+
+" 行尾行首快速移动
+nmap H ^
+nmap L $
+
+" 插入模式下的快捷键
+imap <C-h> <Left>
+imap <C-j> <Down>
+imap <C-k> <Up>
+imap <C-l> <Right>
+
+" 复制到系统剪贴板
+vmap <leader>y "+y
+nmap <leader>p "+p
+
+" 全选
+nmap <leader>a ggVG
+
+" 快速删除行
+nmap <leader>d dd
+
+" 取消Ex模式
+nnoremap Q <nop>
+
+" ----------------------------------------------------------------------------
+" 文件编码和处理
+" ----------------------------------------------------------------------------
+
+" 文件编码
+set encoding=utf-8
+set fileencoding=utf-8
+set fileencodings=utf-8,gbk,gb2312,cp936,ucs-bom,big5,latin1
+
+" 文件格式
+set fileformats=unix,dos,mac
+
+" 关闭备份文件
+set nobackup
+set nowritebackup
+
+" 关闭交换文件
+set noswapfile
+
+" 启用持久化撤销
+if has('persistent_undo')
+    set undofile
+    set undodir=~/.vim/undo//
+    if !isdirectory(&undodir)
+        call mkdir(&undodir, 'p', 0700)
     endif
-    
-    " 窗口大小设置
-    if g:is_macvim
-        set columns=140          " 窗口宽度
-        set lines=45             " 窗口高度
-        set linespace=3          " 行间距
-    endif
-    
-    " 界面元素设置
-    set guioptions-=T            " 隐藏工具栏
-    set guioptions-=m            " 隐藏菜单栏
-    set guioptions-=r            " 隐藏右侧滚动条
-    set guioptions-=R            " 隐藏右侧滚动条 (分割窗口)
-    set guioptions-=l            " 隐藏左侧滚动条
-    set guioptions-=L            " 隐藏左侧滚动条 (分割窗口)
-    set guioptions-=b            " 隐藏底部滚动条
-    set guioptions+=c            " 使用控制台对话框
-    
-    " MacVim 专用设置
-    if g:is_macvim
-        set transparency=8       " 透明度
-        
-        " 窗口居中
-        function! CenterWindow()
-            winpos 100 50
-        endfunction
-        autocmd VimEnter * call CenterWindow()
-        
-        " Mac 专用快捷键
-        nnoremap <D-t> :tabnew<CR>
-        nnoremap <D-w> :tabclose<CR>
-        nnoremap <D-e> :NERDTreeToggle<CR>
-        nnoremap <D-0> :set guifont=Cascadia\ Code:h15<CR>
-        
-        " Cmd+数字键切换标签页
-        for i in range(1, 9)
-            execute 'nnoremap <D-' . i . '> ' . i . 'gt'
-        endfor
-    endif
-    
-    " 光标设置
-    set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
-    
-    " 禁用闪烁
-    set noerrorbells
-    set novisualbell
-    set t_vb=
 endif
 
-" 终端专用设置
-" ============================================================================
-if g:is_terminal
-    " 更好的色彩支持
-    if &term =~ "xterm\\|rxvt\\|screen"
-        set t_Co=256
-    endif
+" 设置撤销级数
+set undolevels=1000
+set undoreload=10000
+
+" 自动保存和读取
+set autoread
+set autowrite
+
+" 文件修改检测
+au FocusGained * :checktime
+
+" 删除末尾空格
+autocmd BufWritePre * :%s/\s\+$//e
+
+" 自动切换到文件目录
+autocmd BufEnter * if bufname("") !~ "^\\[A-Za-z0-9\\]*://" | lcd %:p:h | endif
+
+" ----------------------------------------------------------------------------
+" 颜色主题和外观
+" ----------------------------------------------------------------------------
+
+" 设置颜色主题
+try
+    colorscheme desert
+catch
+    colorscheme default
+endtry
+
+" 自定义颜色设置
+if &t_Co > 2 || has("gui_running")
+    " 搜索高亮颜色
+    highlight Search ctermbg=yellow ctermfg=black guibg=yellow guifg=black
     
-    " 光标形状设置（终端环境）
-    if &term =~ "xterm\\|rxvt"
-        let &t_SI = "\<Esc>[6 q"  " 插入模式细光标
-        let &t_EI = "\<Esc>[2 q"  " 普通模式块光标
-    endif
+    " 当前行高亮
+    highlight CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+    
+    " 行号颜色
+    highlight LineNr ctermfg=grey guifg=grey
+    
+    " 状态栏颜色
+    highlight StatusLine ctermbg=blue ctermfg=white guibg=blue guifg=white
+    
+    " 分割线颜色
+    highlight VertSplit ctermbg=black ctermfg=grey guibg=black guifg=grey
 endif
 
-" 分割线设置
+" 状态栏自定义
+set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}
+
 " ============================================================================
-highlight VertSplit cterm=NONE ctermfg=240 ctermbg=NONE
-highlight VertSplit gui=NONE guifg=#585858 guibg=NONE
-highlight clear VertSplit
-
-" 快捷键设置
+" 第二阶段：高级配置（插件）
 " ============================================================================
-let mapleader = " "          " Leader 键为空格
 
-" 基础快捷键
-nnoremap <Leader>w :w<CR>            " 快速保存
-nnoremap <Leader>q :q<CR>            " 快速退出
-nnoremap <Leader>x :x<CR>            " 保存并退出
-nnoremap <Leader>h :nohlsearch<CR>   " 取消搜索高亮
+" ----------------------------------------------------------------------------
+" 插件加载机制
+" ----------------------------------------------------------------------------
 
-" 文件浏览快捷键
-nnoremap <Leader>e :NERDTreeToggle<CR>
-nnoremap <C-n> :NERDTreeToggle<CR>
+" 检测插件目录
+let s:plugin_dir = expand('~/.vim/plugins')
+let s:local_plugin_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h') . '/plugins'
 
-" 窗口操作
-nnoremap <C-h> <C-w>h        " 左窗口
-nnoremap <C-j> <C-w>j        " 下窗口
-nnoremap <C-k> <C-w>k        " 上窗口
-nnoremap <C-l> <C-w>l        " 右窗口
-
-" 分割窗口
-nnoremap <Leader>sh :split<CR>
-nnoremap <Leader>sv :vsplit<CR>
-
-" 缓冲区操作
-nnoremap <Leader>bn :bnext<CR>
-nnoremap <Leader>bp :bprevious<CR>
-nnoremap <Leader>bd :bdelete<CR>
-
-" 快速编辑配置文件
-nnoremap <Leader>ev :edit $MYVIMRC<CR>
-nnoremap <Leader>sv :source $MYVIMRC<CR>
-
-" 本地插件管理
-" ============================================================================
-let s:local_plugin_dir = s:config_dir . '/plugins'
-let s:local_colors_dir = s:config_dir . '/colors'
-
-" 确保目录存在
-if !isdirectory(s:local_plugin_dir)
-    call mkdir(s:local_plugin_dir, 'p')
-endif
-if !isdirectory(s:local_colors_dir)
-    call mkdir(s:local_colors_dir, 'p')
-endif
-
-" 添加到运行时路径
+" 使用本地插件目录（如果存在）
 if isdirectory(s:local_plugin_dir)
-    execute 'set runtimepath+=' . s:local_plugin_dir . '/*'
-endif
-if isdirectory(s:local_colors_dir)
-    execute 'set runtimepath+=' . s:local_colors_dir
+    let s:plugin_dir = s:local_plugin_dir
 endif
 
-" 插件配置
-" ============================================================================
-
-" vim-airline 状态栏配置
-if isdirectory(s:config_dir . '/plugins/vim-airline')
-    let g:airline#extensions#tabline#enabled = 1
-    let g:airline#extensions#tabline#formatter = 'unique_tail'
-    let g:airline_powerline_fonts = 0
+" 将插件目录添加到runtimepath
+if isdirectory(s:plugin_dir)
+    execute 'set runtimepath+=' . s:plugin_dir . '/vim-sensible'
+    execute 'set runtimepath+=' . s:plugin_dir . '/nerdtree'
+    execute 'set runtimepath+=' . s:plugin_dir . '/vim-airline'
+    execute 'set runtimepath+=' . s:plugin_dir . '/vim-airline-themes'
+    execute 'set runtimepath+=' . s:plugin_dir . '/auto-pairs'
+    execute 'set runtimepath+=' . s:plugin_dir . '/vim-commentary'
+    execute 'set runtimepath+=' . s:plugin_dir . '/vim-surround'
+    execute 'set runtimepath+=' . s:plugin_dir . '/vim-fugitive'
+    execute 'set runtimepath+=' . s:plugin_dir . '/vim-polyglot'
     
-    " 自定义符号
-    if !exists('g:airline_symbols')
-        let g:airline_symbols = {}
-    endif
-    let g:airline_left_sep = '▶'
-    let g:airline_right_sep = '◀'
-    let g:airline_symbols.branch = '⎇'
-    let g:airline_symbols.readonly = '⊗'
-    let g:airline_symbols.dirty = '⚡'
+    " 加载插件帮助文档
+    silent! helptags ALL
 endif
 
+" ----------------------------------------------------------------------------
 " NERDTree 配置
-if isdirectory(s:config_dir . '/plugins/nerdtree')
-    let NERDTreeShowHidden=1
-    let NERDTreeMinimalUI=1
-    let NERDTreeDirArrows=1
-    let NERDTreeAutoDeleteBuffer=1
-    let NERDTreeQuitOnOpen=1
-    let NERDTreeWinSize=30
-    let NERDTreeIgnore=['\.DS_Store$', '\.git$', '__pycache__', '\.pyc$']
-    
-    " 默认不自动打开 NERDTree
-    " 自动关闭（当只剩 NERDTree 时）
-    autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-    
-    " 图标设置
-    let g:NERDTreeDirArrowExpandable = '▸'
-    let g:NERDTreeDirArrowCollapsible = '▾'
+" ----------------------------------------------------------------------------
+
+" NERDTree 基本设置
+let NERDTreeShowHidden=1
+let NERDTreeIgnore=['\.pyc$', '\~$', '\.swp$', '\.DS_Store$']
+let NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
+let NERDTreeShowBookmarks=1
+let NERDTreeWinSize=25
+let NERDTreeWinPos="left"
+let NERDTreeHighlightCursorline=1
+let NERDTreeAutoDeleteBuffer=1
+let NERDTreeMinimalUI=1
+let NERDTreeDirArrows=1
+
+" 启动时自动打开NERDTree
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+" 关闭vim时自动关闭NERDTree
+autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+" NERDTree 快捷键
+nmap <leader>n :NERDTreeToggle<CR>
+nmap <leader>f :NERDTreeFind<CR>
+
+" 在新标签页中打开
+let NERDTreeMapOpenInTab='<ENTER>'
+
+" ----------------------------------------------------------------------------
+" Vim-Airline 配置
+" ----------------------------------------------------------------------------
+
+" 启用airline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#formatter = 'default'
+
+" 显示缓冲区
+let g:airline#extensions#tabline#buffer_nr_show = 1
+
+" 设置airline主题
+try
+    let g:airline_theme='dark'
+catch
+    let g:airline_theme='simple'
+endtry
+
+" Powerline字体支持
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
 endif
 
-" 文件类型设置
-" ============================================================================
-autocmd FileType python setlocal tabstop=4 shiftwidth=4 expandtab
-autocmd FileType javascript,typescript setlocal tabstop=2 shiftwidth=2 expandtab
-autocmd FileType html,css setlocal tabstop=2 shiftwidth=2 expandtab
-autocmd FileType markdown setlocal wrap linebreak
+" unicode符号
+let g:airline_left_sep = '»'
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '«'
+let g:airline_right_sep = '◀'
+let g:airline_symbols.linenr = '␊'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.paste = 'Þ'
+let g:airline_symbols.paste = '∥'
+let g:airline_symbols.whitespace = 'Ξ'
 
-" 自动命令
-" ============================================================================
-autocmd BufWritePre * :%s/\s\+$//e  " 去除行尾空格
-autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+" 状态栏显示设置
+let g:airline_section_b = '%{strftime("%c")}'
+let g:airline_section_y = 'BN: %{bufnr("%")}'
 
-" 实用函数
+" 扩展功能
+let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#syntastic#enabled = 1
+let g:airline#extensions#hunks#enabled = 1
+
+" ----------------------------------------------------------------------------
+" 其他插件配置
+" ----------------------------------------------------------------------------
+
+" Auto-pairs 配置
+let g:AutoPairsFlyMode = 0
+let g:AutoPairsShortcutBackInsert = '<M-b>'
+
+" Commentary 配置
+autocmd FileType apache setlocal commentstring=#\ %s
+
+" Fugitive 配置（Git集成）
+nmap <leader>gs :Gstatus<CR>
+nmap <leader>gd :Gdiff<CR>
+nmap <leader>gc :Gcommit<CR>
+nmap <leader>gb :Gblame<CR>
+nmap <leader>gl :Glog<CR>
+nmap <leader>gp :Git push<CR>
+nmap <leader>gr :Gread<CR>
+nmap <leader>gw :Gwrite<CR>
+nmap <leader>ge :Gedit<CR>
+
+" Surround 插件无需额外配置，使用默认快捷键：
+" cs"'  : 将双引号改为单引号
+" ds"   : 删除双引号
+" ysiw" : 为当前单词添加双引号
+
+" 多语言语法支持（vim-polyglot）
+let g:polyglot_disabled = ['csv']
+
 " ============================================================================
-function! ToggleNumber()
-    if &relativenumber
+" 自定义函数和命令
+" ============================================================================
+
+" 切换行号显示模式
+function! NumberToggle()
+    if(&relativenumber == 1)
         set norelativenumber
         set number
     else
         set relativenumber
     endif
-endfunction
-nnoremap <Leader>tn :call ToggleNumber()<CR>
+endfunc
 
-" 配置版本信息
-let g:vimrc_version = "2.0-unified"
-let g:vimrc_updated = "2025-06-15"
+nnoremap <C-n> :call NumberToggle()<cr>
+
+" 快速切换主题
+function! ToggleBackground()
+    if &background == 'dark'
+        set background=light
+    else
+        set background=dark
+    endif
+endfunction
+
+nnoremap <leader>bg :call ToggleBackground()<CR>
+
+" 删除所有trailing whitespace
+function! StripTrailingWhitespace()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+
+nnoremap <leader>sw :call StripTrailingWhitespace()<CR>
+
+" ============================================================================
+" 配置文件结束
+" ============================================================================
