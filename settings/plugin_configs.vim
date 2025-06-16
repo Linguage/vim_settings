@@ -19,6 +19,15 @@ let g:airline#extensions#syntastic#enabled = 0
 let g:airline#extensions#hunks#enabled = 0
 let g:airline#extensions#whitespace#enabled = 0
 
+" ---------------------------
+" vim-devicons 图标支持
+" ---------------------------
+let g:webdevicons_enable = 1
+let g:webdevicons_enable_airline_statusline = 1
+let g:webdevicons_enable_airline_tabline = 1
+let g:airline_powerline_fonts = 1
+
+
 " 不自定义符号，使用默认
 " let g:airline_symbols = {}
 

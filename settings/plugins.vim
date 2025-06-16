@@ -22,6 +22,7 @@ if isdirectory(s:plugin_dir)
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-surround'
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-fugitive'
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-polyglot'
+    execute 'set runtimepath+=' . s:plugin_dir . '/vim-devicons'
     
     " 加载插件帮助文档
     silent! helptags ALL
