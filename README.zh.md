@@ -49,6 +49,66 @@
 
 `vim-manager` 脚本提供了一套完整的命令，方便维护：
 
+- **`./vim-manager install`** - 一键安装配置和所有插件
+- **`./vim-manager update`** - 更新所有已安装的插件到最新版本
+- **`./vim-manager status`** - 检查配置状态和插件健康度
+- **`./vim-manager clean`** - 清理不在管理清单中的插件
+- **`./vim-manager uninstall`** - 完全卸载配置（不会删除源文件）
+- **`./vim-manager help`** - 显示帮助信息
+
+### 模块化架构
+
+从 v3.0 开始，`vim-manager` 采用模块化设计：
+
+```text
+vim-manager (主入口)
+vim_manager_modules/
+├── config.sh      # 配置和插件清单
+├── helpers.sh     # 工具函数
+├── core_logic.sh  # 核心业务逻辑
+└── commands.sh    # 命令处理器
+```
+
+这种设计提供了：
+- **更好的可维护性**：每个模块专注特定功能
+- **清晰的代码组织**：逻辑分离，易于理解
+- **便于扩展**：新功能可以独立开发和测试
+
+## 包含的插件
+
+| 插件 | 功能 | 描述 |
+|------|------|------|
+| `vim-airline` | 状态栏 | 美观且信息丰富的状态栏 |
+| `vim-airline-themes` | 状态栏主题 | 为 airline 提供多种主题 |
+| `nerdtree` | 文件浏览器 | 树形文件系统浏览器 |
+| `vim-devicons` | 图标支持 | 为文件和文件夹提供图标 |
+| `nvim-web-devicons` | Neovim 图标 | Neovim 专用图标支持 |
+| `vim-fugitive` | Git 集成 | 强大的 Git 命令集成 |
+| `vim-surround` | 包围编辑 | 快速添加/修改/删除包围字符 |
+| `vim-commentary` | 注释切换 | 智能注释/取消注释 |
+| `vim-polyglot` | 语言支持 | 多种编程语言的语法高亮 |
+| `auto-pairs` | 自动配对 | 自动匹配括号、引号等 |
+| `vim-sensible` | 合理默认 | 提供合理的 Vim 默认设置 |
+
+## 配置结构
+
+```text
+vim_settings/
+├── vim-manager          # 管理脚本（主入口）
+├── vim_manager_modules/ # 脚本模块
+├── vimrc               # 主配置文件
+├── settings/           # 模块化配置
+│   ├── basic.vim       # 基础设置
+│   ├── ui.vim          # 界面设置
+│   ├── mappings.vim    # 按键映射
+│   ├── plugins.vim     # 插件加载
+│   ├── plugin_configs.vim # 插件配置
+│   └── colorscheme.vim # 主题配置
+├── colors/             # 颜色主题
+├── plugins/            # 插件目录（自动管理）
+└── docs/               # 文档
+```
+
 -   `./vim-manager install`
     安装配置，链接文件，并从清单中克隆所有插件。
 
