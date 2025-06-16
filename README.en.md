@@ -4,6 +4,11 @@
 
 This repository contains a personalized, portable Vim setup designed for a modern and efficient workflow. It comes with a powerful management script that allows for one-click installation and easy maintenance across multiple devices.
 
+## Documentation
+
+- [Keybindings Reference](./docs/keybindings.en.md) - Reference for all custom keybindings and plugin commands
+- [Changelog](./docs/changelog.en.md) - Version history and updates
+
 ## Key Features
 
 - **Modern UI**: Styled with `vim-airline` and `vim-airline-themes` for a beautiful and informative statusline and tabline.
