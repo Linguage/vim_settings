@@ -27,15 +27,18 @@ set splitbelow
 set splitright
 
 " 设置字体 (仅适用于 GUI 版本如 MacVim/GVim)
-if has("gui_running")
-    " MacVim/GVim 字体设置
-    set guifont=Menlo\ Regular:h14
+if has("gui_macvim")
+    " MacVim 专用字体设置
+    set guifont=Hack\ Nerd\ Font\ Mono:h14
     " 移除工具栏和菜单栏
     set guioptions-=T
     set guioptions-=m
     " 移除滚动条
     set guioptions-=r
     set guioptions-=L
+elseif has("gui_running")
+    " 其他 GUI 版本的设置
+    set guifont=Hack\ Nerd\ Font\ Mono\ 11
 endif
 
 " 自定义颜色设置和高亮
