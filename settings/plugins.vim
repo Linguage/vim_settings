@@ -23,6 +23,9 @@ if isdirectory(s:plugin_dir)
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-fugitive'
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-polyglot'
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-devicons'
+    " Load nvim-web-devicons for better icon support
+    execute 'set runtimepath+=' . s:plugin_dir . '/nvim-web-devicons'
+    
     " Only load all-the-icons in MacVim
     if has('gui_macvim')
         execute 'set runtimepath+=' . s:plugin_dir . '/all-the-icons'
