@@ -69,8 +69,8 @@
 
 ## 文档
 
-- [快捷键指南](./docs/keybindings_zh.md) - 所有自定义快捷键和插件命令的参考
-- [更新日志](./docs/changelog_zh.md) - 版本更新历史记录
+- [快捷键指南](./docs/keybindings.zh.md) - 所有自定义快捷键和插件命令的参考
+- [更新日志](./docs/changelog.zh.md) - 版本更新历史记录
 
 ## 故障排除
 
