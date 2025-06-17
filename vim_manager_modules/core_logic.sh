@@ -68,3 +68,65 @@ install_plugins() {
         fi
     done
 }
+
+check_copilot_requirements() {
+    header "Checking GitHub Copilot Requirements"
+    
+    # Check Node.js
+    if command -v node >/dev/null 2>&1; then
+        local node_version=$(node --version)
+        success "Node.js found: $node_version"
+    else
+        error "Node.js is required for GitHub Copilot but not found."
+        info "Please install Node.js from https://nodejs.org/"
+        return 1
+    fi
+    
+    # Check Vim version
+    if command -v vim >/dev/null 2>&1; then
+        local vim_version=$(vim --version | head -1)
+        success "Vim found: $vim_version"
+        
+        # Check if Vim version is 9.0.0185 or higher
+        local version_num=$(vim --version | grep -o 'IMproved [0-9]\+\.[0-9]\+' | grep -o '[0-9]\+\.[0-9]\+' | head -1)
+        if [ -n "$version_num" ]; then
+            local major=$(echo "$version_num" | cut -d. -f1)
+            local minor=$(echo "$version_num" | cut -d. -f2)
+            if [ "$major" -ge 9 ] && [ "$minor" -ge 0 ]; then
+                success "Vim version meets requirements (9.0.0185+)"
+            else
+                warning "Vim version may be too old. GitHub Copilot requires Vim 9.0.0185 or newer."
+            fi
+        fi
+    else
+        error "Vim not found. Please install Vim first."
+        return 1
+    fi
+    
+    return 0
+}
+
+setup_copilot() {
+    header "Setting up GitHub Copilot"
+    
+    # Check if copilot.vim is installed
+    local copilot_path="$PLUGINS_DIR/copilot.vim"
+    if [ ! -d "$copilot_path" ]; then
+        error "GitHub Copilot plugin not found. Run install first."
+        return 1
+    fi
+    
+    info "GitHub Copilot plugin is installed."
+    info "To complete setup, please:"
+    echo ""
+    echo "  1. Start Vim: ${BLUE}vim${NC}"
+    echo "  2. Run setup: ${BLUE}:Copilot setup${NC}"
+    echo "  3. Follow the authentication instructions"
+    echo ""
+    info "Useful Copilot commands:"
+    echo "  ${BLUE}:Copilot status${NC}  - Check status"
+    echo "  ${BLUE}:Copilot enable${NC}  - Enable Copilot"
+    echo "  ${BLUE}:Copilot disable${NC} - Disable Copilot"
+    echo ""
+    success "Copilot setup information provided."
+}

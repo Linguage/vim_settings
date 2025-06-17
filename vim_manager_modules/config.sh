@@ -5,8 +5,8 @@
 # ============================================================================
 
 # --- Configuration ---
-VERSION="3.0"
-UPDATED="2025-06-16"
+VERSION="3.1"
+UPDATED="2025-06-17"
 
 # Directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
@@ -27,6 +27,7 @@ PLUGINS=(
     "https://github.com/sheerun/vim-polyglot.git vim-polyglot"
     "https://github.com/jiangmiao/auto-pairs.git auto-pairs"
     "https://github.com/tpope/vim-sensible.git vim-sensible"
+    "https://github.com/github/copilot.vim.git copilot.vim"
 )
 
 # --- Colors and Formatting ---

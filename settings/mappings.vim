@@ -49,6 +49,12 @@ imap <C-j> <Down>
 imap <C-k> <Up>
 imap <C-l> <Right>
 
+" 确保 ESC 键正常工作
+inoremap <Esc> <Esc>
+" 提供额外的退出插入模式方法
+inoremap jk <Esc>
+inoremap kj <Esc>
+
 " 复制到系统剪贴板
 vmap <leader>y "+y
 nmap <leader>p "+p
