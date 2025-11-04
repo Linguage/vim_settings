@@ -69,24 +69,6 @@ if &t_Co > 2 || has("gui_running")
     highlight FoldColumn ctermbg=235 ctermfg=249 guibg=#262626 guifg=#b2b2b2
 endif
 
-" 设置光标样式（在支持的终端中）
-let s:cursor_shape_supported = 0
-if exists('$TERM_PROGRAM')
-    if $TERM_PROGRAM ==# 'iTerm.app' || $TERM_PROGRAM ==# 'Apple_Terminal'
-        let s:cursor_shape_supported = 1
-    endif
-endif
-
-if s:cursor_shape_supported
-    if exists('$TMUX')
-        let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-        let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-    else
-        let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-        let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-    endif
-endif
-
 " 窗口标题设置
 if has('title')
     set title

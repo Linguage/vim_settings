@@ -79,3 +79,21 @@ filetype indent on
 " 启用语法高亮
 syntax enable
 syntax on
+
+function! s:OpenShell() abort
+    if has('terminal')
+        execute 'terminal'
+    elseif has('mac') || has('gui_running')
+        if exists('g:preferred_terminal') && type(g:preferred_terminal) == type('') && g:preferred_terminal !=# ''
+            execute 'silent !open -a ' . shellescape(g:preferred_terminal)
+        else
+            silent !open -a Terminal
+        endif
+    else
+        echohl WarningMsg | echom 'No :terminal support; open an external terminal.' | echohl None
+    endif
+endfunction
+
+command! Shell call s:OpenShell()
+cnoreabbrev <expr> shell ((getcmdtype()==':') && (getcmdline() =~# '^\s*shell\>')) ? 'Shell' : 'shell'
+nnoremap <silent> <leader>sh :Shell<CR>
