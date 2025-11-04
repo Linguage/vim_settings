@@ -11,6 +11,9 @@ endif
 set list
 set listchars=tab:▸\ ,trail:•,extends:❯,precedes:❮,nbsp:×,eol:¬
 
+" 高亮当前列
+set cursorcolumn
+
 " 设置分割线和填充字符
 set fillchars+=vert:┃,fold:─,diff:─
 
@@ -48,6 +51,8 @@ if &t_Co > 2 || has("gui_running")
     
     " 当前行高亮
     highlight CursorLine cterm=NONE ctermbg=236 ctermfg=NONE guibg=#2d2d2d guifg=NONE
+    " 当前列高亮
+    highlight CursorColumn cterm=NONE ctermbg=236 ctermfg=NONE guibg=#2d2d2d guifg=NONE
     
     " 行号颜色
     highlight LineNr ctermfg=240 guifg=#585858
@@ -65,12 +70,21 @@ if &t_Co > 2 || has("gui_running")
 endif
 
 " 设置光标样式（在支持的终端中）
-if exists('$TMUX')
-    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-else
-    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+let s:cursor_shape_supported = 0
+if exists('$TERM_PROGRAM')
+    if $TERM_PROGRAM ==# 'iTerm.app' || $TERM_PROGRAM ==# 'Apple_Terminal'
+        let s:cursor_shape_supported = 1
+    endif
+endif
+
+if s:cursor_shape_supported
+    if exists('$TMUX')
+        let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+        let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+    else
+        let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+        let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+    endif
 endif
 
 " 窗口标题设置
