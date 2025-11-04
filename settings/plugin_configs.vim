@@ -133,14 +133,14 @@ let NERDTreeMapOpenInTab='<ENTER>'
 " GitHub Copilot 配置
 " ----------------------------------------------------------------------------
 
-" Copilot 快捷键配置 - 使用 Ctrl+G 避免与现有映射冲突
-imap <silent><script><expr> <C-G> copilot#Accept("\<CR>")
-let g:copilot_no_tab_map = v:true
+" Copilot 快捷键配置 - 暂时禁用所有快捷键
+" imap <silent><script><expr> <C-G> copilot#Accept("\<CR>")
+" let g:copilot_no_tab_map = v:true
 
 " 可选：自定义其他快捷键
-imap <C-]> <Plug>(copilot-next)
-imap <C-[> <Plug>(copilot-previous)
-imap <C-\> <Plug>(copilot-dismiss)
+" imap <C-]> <Plug>(copilot-next)
+" imap <C-[> <Plug>(copilot-previous)
+" imap <C-\> <Plug>(copilot-dismiss)
 
 " 可选：针对特定文件类型禁用 Copilot
 let g:copilot_filetypes = {
