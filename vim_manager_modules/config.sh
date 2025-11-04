@@ -28,6 +28,7 @@ PLUGINS=(
     "https://github.com/jiangmiao/auto-pairs.git auto-pairs"
     "https://github.com/tpope/vim-sensible.git vim-sensible"
     "https://github.com/github/copilot.vim.git copilot.vim"
+    "https://github.com/iamcco/markdown-preview.nvim.git markdown-preview.nvim"
 )
 
 # --- Colors and Formatting ---

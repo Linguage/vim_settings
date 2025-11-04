@@ -159,3 +159,24 @@ let g:copilot_filetypes = {
 
 " 确保 Copilot 默认启用
 let g:copilot_enabled = v:true
+
+" ----------------------------------------------------------------------------
+" Markdown Preview 配置
+" ----------------------------------------------------------------------------
+
+" 设置 Markdown Preview 插件路径（避免重复加载）
+let g:mkdp_path_to_plugin = expand('~/.vim/plugins/markdown-preview.nvim/app')
+
+" 默认使用浏览器打开（Chrome 或系统默认）
+function! MkdpOpenBrowser(url)
+    execute 'silent !open ' . shellescape(a:url)
+endfunction
+let g:mkdp_browserfunc = 'MkdpOpenBrowser'
+
+" 仅在 markdown、pandoc 等文件类型自动加载
+let g:mkdp_filetypes = ['markdown', 'mkd', 'md', 'pandoc']
+
+" 启动/关闭预览的快捷键
+nnoremap <silent> <leader>mp :MarkdownPreviewToggle<CR>
+nnoremap <silent> <leader>mo :MarkdownPreview<CR>
+nnoremap <silent> <leader>mc :MarkdownPreviewStop<CR>
