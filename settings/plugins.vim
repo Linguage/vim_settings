@@ -27,6 +27,7 @@ if isdirectory(s:plugin_dir)
     execute 'set runtimepath+=' . s:plugin_dir . '/nvim-web-devicons'
     " Markdown preview plugin
     execute 'set runtimepath+=' . s:plugin_dir . '/markdown-preview.nvim'
+    execute 'set runtimepath+=' . s:plugin_dir . '/vim-which-key'
     
     " Only load all-the-icons in MacVim
     if has('gui_macvim')

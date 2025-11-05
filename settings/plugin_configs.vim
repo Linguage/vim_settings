@@ -153,3 +153,24 @@ let g:mkdp_filetypes = ['markdown', 'mkd', 'md', 'pandoc']
 nnoremap <silent> <leader>mp :MarkdownPreviewToggle<CR>
 nnoremap <silent> <leader>mo :MarkdownPreview<CR>
 nnoremap <silent> <leader>mc :MarkdownPreviewStop<CR>
+
+" ----------------------------------------------------------------------------
+" which-key 配置（按下 <leader> 弹出菜单）
+" ----------------------------------------------------------------------------
+
+" 建议的输入超时，保证快速弹出
+set timeout
+set timeoutlen=400
+
+" 在按下 <leader> 时弹出 which-key
+nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+
+" 可选：为分组起名，展示更友好
+let g:which_key_map = {}
+let g:which_key_map.f = { 'name': '+file' }
+let g:which_key_map.g = { 'name': '+git' }
+let g:which_key_map.w = { 'name': '+window' }
+let g:which_key_map.t = { 'name': '+theme' }
+
+" 启动 which-key（确保加载）
+autocmd VimEnter * call which_key#register('<Space>', 'g:which_key_map')
