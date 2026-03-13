@@ -1,3 +1,11 @@
+---
+title: "Keybindings & Usage Guide"
+date: 2026-03-13
+created: 2026-03-13
+category: "reference"
+tags: ["vim", "keybindings", "guide", "reference"]
+---
+
 # Keybindings & Usage Guide
 
 This document provides a reference for all the custom keybindings and essential plugin commands in this Vim configuration.

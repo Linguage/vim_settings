@@ -1,3 +1,11 @@
+---
+title: "Vim 工作流与自动化补强阶段总结"
+date: 2026-03-13
+created: 2026-03-13
+category: "worknotes"
+tags: ["vim", "workflow", "automation", "总结"]
+---
+
 # Vim 工作流与自动化补强阶段总结
 
 日期：2026-03-13

@@ -1,3 +1,12 @@
+---
+title: "vim-manager Refactor Plan"
+date: 2025-06-16
+created: 2025-06-16
+updated: 2025-06-16
+category: "worknotes"
+tags: ["vim-manager", "refactor", "plan", "modular"]
+---
+
 # vim-manager 修改与重构计划
 
 ## 第一阶段：清理与调整 `vim-manager` 脚本

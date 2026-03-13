@@ -1,3 +1,11 @@
+---
+title: "vim-manager Script Analysis"
+date: 2025-06-16
+created: 2025-06-16
+category: "worknotes"
+tags: ["vim-manager", "script", "analysis", "legacy"]
+---
+
 # vim-manager 脚本分析
 
 `vim-manager` 是一个用于管理 Vim/Neovim 配置的 Bash 脚本。它提供了安装、更新、清理插件以及管理主题等功能。

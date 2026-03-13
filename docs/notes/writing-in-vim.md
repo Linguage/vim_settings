@@ -1,3 +1,11 @@
+---
+title: "在vim上的写作体验"
+date: 2025-11-04
+created: 2025-11-04
+updated: 2026-03-13
+description: "记录使用vim进行写作的体验和心路历程"
+tags: ["vim", "写作", "markdown", "工具"]
+---
 
 # 在vim上的写作体验
 
