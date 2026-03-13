@@ -17,7 +17,7 @@ show_help() {
     echo "  update       Update all plugins to their latest versions."
     echo "  clean        Remove any plugins not listed in the manifest."
     echo "  status       Check the status of the configuration and plugins."
-    echo "  uninstall    Remove the Vim configuration and all installed components."
+    echo "  uninstall    Remove symlinks created by install without deleting the repo."
     echo "  help         Show this help message."
     echo ""
 }
@@ -113,13 +113,26 @@ do_status() {
     local VIM_DIR="$HOME/.vim"
     local VIMRC_FILE="$HOME/.vimrc"
 
-    if [ -L "$VIM_DIR" ] && [ "$(readlink "$VIM_DIR")" == "$SCRIPT_DIR" ]; then
+    local expected_vim_dir
+    expected_vim_dir="$(resolve_path "$SCRIPT_DIR")"
+
+    local actual_vim_dir=""
+    if [ -L "$VIM_DIR" ]; then
+        actual_vim_dir="$(resolve_path "$VIM_DIR")"
+    fi
+
+    if [ -L "$VIM_DIR" ] && [ "$actual_vim_dir" == "$expected_vim_dir" ]; then
         success "~/.vim is correctly linked."
     else
         error "~/.vim is not linked correctly. Run 'install'."
     fi
 
-    if [ -L "$VIMRC_FILE" ] && [ "$(readlink "$VIMRC_FILE")" == "$VIM_DIR/vimrc" ]; then
+    local actual_vimrc_target=""
+    if [ -L "$VIMRC_FILE" ]; then
+        actual_vimrc_target="$(resolve_path "$VIMRC_FILE")"
+    fi
+
+    if [ -L "$VIMRC_FILE" ] && [ "$actual_vimrc_target" == "$expected_vim_dir/vimrc" ]; then
         success "~/.vimrc is correctly linked."
     else
         error "~/.vimrc is not linked correctly. Run 'install'."
@@ -170,6 +183,32 @@ do_status() {
 
 do_uninstall() {
     header "Uninstalling Vim Configuration"
-    info "This will remove symlinks and the entire plugins directory."
+    info "This will remove symlinks created by vim-manager."
     warning "Your actual configuration in $SCRIPT_DIR will NOT be deleted."
+
+    local VIM_DIR="$HOME/.vim"
+    local VIMRC_FILE="$HOME/.vimrc"
+    local GVIMRC_FILE="$HOME/.gvimrc"
+    local expected_vim_dir
+    expected_vim_dir="$(resolve_path "$SCRIPT_DIR")"
+
+    if [ -L "$GVIMRC_FILE" ] && [ "$(resolve_path "$GVIMRC_FILE")" == "$expected_vim_dir/vimrc" ]; then
+        info "Removing symlink $GVIMRC_FILE"
+        rm "$GVIMRC_FILE"
+        success "Removed ~/.gvimrc symlink."
+    fi
+
+    if [ -L "$VIMRC_FILE" ] && [ "$(resolve_path "$VIMRC_FILE")" == "$expected_vim_dir/vimrc" ]; then
+        info "Removing symlink $VIMRC_FILE"
+        rm "$VIMRC_FILE"
+        success "Removed ~/.vimrc symlink."
+    fi
+
+    if [ -L "$VIM_DIR" ] && [ "$(resolve_path "$VIM_DIR")" == "$expected_vim_dir" ]; then
+        info "Removing symlink $VIM_DIR"
+        rm "$VIM_DIR"
+        success "Removed ~/.vim symlink."
+    fi
+
+    success "Uninstall complete. Repository files were left untouched."
 }

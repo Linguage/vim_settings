@@ -14,8 +14,8 @@
    - `README.en.md` - 同步更新英文版本
 
 2. **变更日志**
-   - `docs/changelog.zh.md` - 详细记录 v3.0 重构成果
-   - `docs/changelog.en.md` - 英文版变更日志
+   - `docs/history/changelog.zh.md` - 详细记录 v3.0 重构成果
+   - `docs/history/changelog.en.md` - 英文版变更日志
 
 ### 🎯 更新亮点
 

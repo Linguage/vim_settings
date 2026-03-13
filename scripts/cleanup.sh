@@ -12,8 +12,8 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-# 脚本目录
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# 项目根目录
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # 统计
 DELETED_FILES=0
@@ -77,16 +77,16 @@ echo "开始清理临时文件..."
 # 临时文件列表
 TEMP_FILES=(
     # 诊断和测试文件
-    "$SCRIPT_DIR/test_vim_modes.vim"
+    "$PROJECT_DIR/test_vim_modes.vim"
 
     # 潜在的备份文件
-    "$SCRIPT_DIR/*.bak"
-    "$SCRIPT_DIR/*.tmp"
-    "$SCRIPT_DIR/*~"
+    "$PROJECT_DIR/*.bak"
+    "$PROJECT_DIR/*.tmp"
+    "$PROJECT_DIR/*~"
     
     # 其他可能的临时文件
-    "$SCRIPT_DIR/*.swp"
-    "$SCRIPT_DIR/.*.swp"
+    "$PROJECT_DIR/*.swp"
+    "$PROJECT_DIR/.*.swp"
 )
 
 if [ $DRY_RUN -eq 1 ]; then
@@ -108,7 +108,7 @@ done
 
 # 清理空的临时文件夹
 if [ $DRY_RUN -eq 0 ]; then
-    EMPTY_DIRS=$(find "$SCRIPT_DIR" -type d -name "tmp*" -o -name "temp*" -o -name "*backup*" -o -name "*bak" -empty)
+    EMPTY_DIRS=$(find "$PROJECT_DIR" -type d \( -name "tmp*" -o -name "temp*" -o -name "*backup*" -o -name "*bak" \) -empty)
     if [ ! -z "$EMPTY_DIRS" ]; then
         for dir in $EMPTY_DIRS; do
             rmdir "$dir"
@@ -119,9 +119,8 @@ fi
 
 # 确保保留的重要文件不被清理
 PRESERVE_FILES=(
-    "$SCRIPT_DIR/clean_empty_files.sh"
-    "$SCRIPT_DIR/clean_empty_files_副本.sh"
-    "$SCRIPT_DIR/cleanup.sh"
+    "$PROJECT_DIR/vim-manager"
+    "$PROJECT_DIR/scripts/cleanup.sh"
 )
 
 for file in "${PRESERVE_FILES[@]}"; do

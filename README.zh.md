@@ -4,10 +4,44 @@
 
 本仓库包含一个高度可定制的 Vim 配置，专为现代高效的工作流程设计。它配备了一个强大的管理脚本，可以一键安装并在多台设备上轻松维护。
 
+当前推荐的使用方式是：将家目录的 `.vim` 符号链接到本目录，并让家目录的 `.vimrc` 指向本目录中的 `vimrc`。这样可以把真实生效的 Vim 配置集中放在仓库中管理。
+
+## 核心工作流
+
+这套配置目前重点覆盖以下几类高频工作流：
+
+- **项目内导航**：`<C-p>` 使用 `:find` 查找文件，`<C-y>` / `<leader>n` 打开文件树，`<leader>f` 在 NERDTree 中定位当前文件。
+- **搜索与结果跳转**：`<leader>gg` 和 `:LiveGrep` 通过 `rg` 将结果送入 quickfix，配合 `<leader>co`、`<leader>cn`、`<leader>cp`、`[q`、`]q` 快速跳转。
+- **常用编辑动作**：软换行按屏幕行移动，翻页后自动居中，`<F2>` 预填充替换命令，`<M-j>` / `<M-k>` 上下移动当前行或选区。
+- **Git 操作**：通过 `vim-fugitive` 提供状态、diff、blame、log、push 等常用入口。
+- **Markdown 预览**：在 Markdown 文件中可直接调用浏览器预览。
+- **macOS 兼容性**：在 macOS 下优化终端 Esc 响应，并仅在 `osascript` 可用时启用输入法切换逻辑。
+
+## 可选依赖
+
+不是所有功能都依赖系统额外安装，但下面这些依赖会明显影响体验：
+
+- **`rg`**：用于 `:LiveGrep` 和 `<leader>gg` 的项目全文搜索。未安装时，搜索工作流会退化。
+- **Nerd Font**：用于状态栏和文件树图标显示。未安装时功能仍可使用，但图标会显示异常。
+- **支持 `+clipboard` 的 Vim**：用于系统剪贴板互通。未启用时，`<leader>y` / `<leader>p` 的体验会受限。
+- **macOS `osascript`**：当前输入法切换逻辑基于 AppleScript，仅在 macOS 下有效。
+- **终端 Vim**：macOS 下会额外启用较短的 `ttimeoutlen`，改善 Esc 和 Alt 组合键的响应体验。
+
+## 个人与学习型映射
+
+除了核心工作流，这套配置还保留了一些更偏个人使用习惯的映射，例如：
+
+- `jk` / `kj` 退出插入模式
+- `H` / `L` 到行首和行尾
+- `showmode` 常显
+- `vimtutor`、学习计划、练习文档等入口
+
+这些映射并非“所有机器都必须保留”的部分，后续如果要继续精简，优先从这类个人偏好入口下手。
+
 ## 主要特性
 
 - **现代化界面**：使用 `vim-airline` 和 `vim-airline-themes` 提供美观且信息丰富的状态栏和标签栏。
-- **图标支持**：集成 `nvim-web-devicons`，为 NERDTree 提供简洁现代的文件和文件夹图标。
+- **图标支持**：集成 `vim-devicons`，为 NERDTree 提供简洁现代的文件和文件夹图标。
 - **增强的文件导航**：使用 `preservim/nerdtree` 提供直观的文件系统浏览器。
 - **Git 集成**：利用 `tpope/vim-fugitive` 实现 Vim 内无缝的 Git 命令操作。
 - **智能编辑**：包含 `vim-surround`、`vim-commentary` 和 `auto-pairs` 等必备插件，加速常见编辑任务。
@@ -51,9 +85,9 @@
 
 - **`./vim-manager install`** - 一键安装配置和所有插件
 - **`./vim-manager update`** - 更新所有已安装的插件到最新版本
-- **`./vim-manager status`** - 检查配置状态和插件健康度
-- **`./vim-manager clean`** - 清理不在管理清单中的插件
-- **`./vim-manager uninstall`** - 完全卸载配置（不会删除源文件）
+- **`./vim-manager status`** - 检查符号链接、托管插件和未托管插件状态
+- **`./vim-manager clean`** - 清理不在管理清单中的插件目录
+- **`./vim-manager uninstall`** - 移除由脚本创建的符号链接，不删除仓库本身
 - **`./vim-manager help`** - 显示帮助信息
 
 ### 模块化架构
@@ -74,6 +108,8 @@ vim_manager_modules/
 - **清晰的代码组织**：逻辑分离，易于理解
 - **便于扩展**：新功能可以独立开发和测试
 
+辅助维护脚本统一收纳在 `scripts/` 目录中。当前保留的辅助脚本是 `scripts/cleanup.sh`，用于清理项目根目录中的临时文件和空目录。
+
 ## 包含的插件
 
 | 插件 | 功能 | 描述 |
@@ -82,13 +118,14 @@ vim_manager_modules/
 | `vim-airline-themes` | 状态栏主题 | 为 airline 提供多种主题 |
 | `nerdtree` | 文件浏览器 | 树形文件系统浏览器 |
 | `vim-devicons` | 图标支持 | 为文件和文件夹提供图标 |
-| `nvim-web-devicons` | Neovim 图标 | Neovim 专用图标支持 |
 | `vim-fugitive` | Git 集成 | 强大的 Git 命令集成 |
 | `vim-surround` | 包围编辑 | 快速添加/修改/删除包围字符 |
 | `vim-commentary` | 注释切换 | 智能注释/取消注释 |
 | `vim-polyglot` | 语言支持 | 多种编程语言的语法高亮 |
 | `auto-pairs` | 自动配对 | 自动匹配括号、引号等 |
 | `vim-sensible` | 合理默认 | 提供合理的 Vim 默认设置 |
+| `markdown-preview.nvim` | Markdown 预览 | 在浏览器中预览 Markdown |
+| `vim-which-key` | 快捷键提示 | 显示 Leader 键可用分组与命令 |
 
 ## 配置结构
 
@@ -96,6 +133,7 @@ vim_manager_modules/
 vim_settings/
 ├── vim-manager          # 管理脚本（主入口）
 ├── vim_manager_modules/ # 脚本模块
+├── scripts/            # 辅助维护脚本
 ├── vimrc               # 主配置文件
 ├── settings/           # 模块化配置
 │   ├── basic.vim       # 基础设置
@@ -122,15 +160,18 @@ vim_settings/
     移除 `plugins/` 目录中未在清单中列出的插件。删除前会显示确认提示。
 
 -   `./vim-manager uninstall`
-    安全地移除所有符号链接和整个 `plugins/` 目录。您的源配置文件不会被删除。
+    安全地移除由 `vim-manager install` 创建的符号链接。仓库目录和其中的插件文件不会被删除。
 
 -   `./vim-manager help`
     显示包含所有可用命令的帮助信息。
 
 ## 文档
 
-- [快捷键指南](./docs/keybindings.zh.md) - 所有自定义快捷键和插件命令的参考
-- [更新日志](./docs/changelog.zh.md) - 版本更新历史记录
+- [快捷键指南](./docs/reference/keybindings.zh.md) - 所有自定义快捷键和插件命令的参考
+- [更新日志](./docs/history/changelog.zh.md) - 版本更新历史记录
+- [历史总结](./docs/history/update-summary.md) - 早期重构与文档更新总结
+- [管理脚本计划](./docs/plans/vim-manager-device-plan.md) - `vim-manager` 的整理与演进计划
+- [遗留文档](./docs/legacy/vim-manager-docs.md) - 旧版脚本分析与历史说明
 
 ## 故障排除
 
@@ -138,7 +179,8 @@ vim_settings/
 
 1. 确保您已安装 Nerd Font 并在终端中启用
 2. 运行 `./vim-manager status` 检查配置状态
-3. 查看 `:checkhealth` 的输出以获取更多诊断信息
+3. 如果 `status` 显示 `all-the-icons` 或 `nvim-web-devicons` 这类 `Unmanaged` 项，说明它们是历史遗留目录，可通过 `./vim-manager clean` 清理
+4. 查看 `:checkhealth` 的输出以获取更多诊断信息
 
 ## 贡献
 

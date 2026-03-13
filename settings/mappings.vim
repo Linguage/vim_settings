@@ -7,47 +7,73 @@ let mapleader = " "
 let g:mapleader = " "
 
 " 快速保存
-nmap <leader>w :w!<cr>
+nnoremap <leader>w :w!<cr>
 
 " 快速退出
-nmap <leader>q :q<cr>
-nmap <leader>Q :qa!<cr>
+nnoremap <leader>q :q<cr>
+nnoremap <leader>Q :qa!<cr>
 
 " 快速编辑vimrc
-nmap <leader>e :edit $MYVIMRC<cr>
+nnoremap <leader>e :edit $MYVIMRC<cr>
 
 " 重新加载vimrc
-nmap <leader>r :source $MYVIMRC<cr>
+nnoremap <leader>r :source $MYVIMRC<cr>
+
+" 命令行中快速粘贴系统剪贴板内容
+cnoremap <C-v> <C-r>+
+
+" 快速查看当前默认配置文件
+nnoremap <leader>vim :vs $MYVIMRC<cr>
 
 " 清除搜索高亮
-nmap <leader>/ :nohlsearch<cr>
+nnoremap <leader>/ :nohlsearch<cr>
+
+" 使用 :find 在项目内查找文件
+nnoremap <C-p> :find <Space>
 
 " 窗口切换
-nmap <C-h> <C-w>h
-nmap <C-j> <C-w>j
-nmap <C-k> <C-w>k
-nmap <C-l> <C-w>l
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
 
 " 调整窗口大小
-nmap <leader>= <C-w>=
-nmap <leader>+ :resize +5<cr>
-nmap <leader>- :resize -5<cr>
-nmap <leader>< :vertical resize -5<cr>
-nmap <leader>> :vertical resize +5<cr>
+nnoremap <leader>= <C-w>=
+nnoremap <leader>+ :resize +5<cr>
+nnoremap <leader>- :resize -5<cr>
+nnoremap <leader>< :vertical resize -5<cr>
+nnoremap <leader>> :vertical resize +5<cr>
+
+" 标签页切换
+nnoremap <C-w>i gt
+nnoremap <C-w>u gT
 
 " 快速移动
-nmap <leader>j 10j
-nmap <leader>k 10k
+nnoremap <leader>j 10j
+nnoremap <leader>k 10k
+
+" 缓冲区切换
+nnoremap <leader>bn :bnext<cr>
+nnoremap <leader>bp :bprevious<cr>
+nnoremap <leader>bb :buffers<cr>:buffer<Space>
+
+" quickfix 工作流
+nnoremap <leader>co :copen<CR>
+nnoremap <leader>cc :cclose<CR>
+nnoremap <leader>cn :cnext<CR>zz
+nnoremap <leader>cp :cprevious<CR>zz
+nnoremap ]q :cnext<CR>zz
+nnoremap [q :cprevious<CR>zz
 
 " 行尾行首快速移动
-nmap H ^
-nmap L $
+nnoremap H g^
+nnoremap L g_
 
 " 插入模式下的快捷键
-imap <C-h> <Left>
-imap <C-j> <Down>
-imap <C-k> <Up>
-imap <C-l> <Right>
+inoremap <C-h> <Left>
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+inoremap <C-l> <Right>
 
 " 确保 ESC 键正常工作
 inoremap <Esc> <Esc>
@@ -56,17 +82,43 @@ inoremap jk <Esc>
 inoremap kj <Esc>
 
 " 复制到系统剪贴板
-vmap <leader>y "+y
-nmap <leader>p "+p
+vnoremap <leader>y "+y
+nnoremap <leader>p "+p
+
+" 从 0 号寄存器粘贴，避免覆盖最近一次 yank
+nnoremap <leader>P "0P
+nnoremap <leader>pp "0p
 
 " 全选
-nmap <leader>a ggVG
+nnoremap <leader>a ggVG
 
 " 快速删除行
-nmap <leader>d dd
+nnoremap <leader>d dd
+
+" 可视模式粘贴后保持选区
+vnoremap p pgv<Esc>
+vnoremap <leader>ss :sort<CR>
+
+" 上下移动行或选区
+nnoremap <M-j> :m .+1<CR>==
+nnoremap <M-k> :m .-2<CR>==
+vnoremap <M-j> :m '>+1<CR>gv=gv
+vnoremap <M-k> :m '<-2<CR>gv=gv
+
+" 以当前单词或选区预填充替换命令
+nnoremap <F2> :%s/\C\<<C-r><C-w>\>/<C-r><C-w>/g<Left><Left>
+vnoremap <F2> "-y:%s/<C-r>-\C/<C-r>-/g<Left><Left>
 
 " 取消Ex模式
 nnoremap Q <nop>
+
+" ripgrep 项目搜索
+nnoremap <silent> <leader>gg :silent grep! <C-R><C-W> .<CR>:copen<CR>:redraw!<CR>
+nnoremap <silent> <leader>gf :LiveGrep<CR>
+
+" 文件树工作流
+nnoremap <silent> <C-y> :NERDTreeToggle<CR>
+nnoremap <silent> <leader>cd :cd %:h<CR>:NERDTreeCWD<CR>
 
 " ============================================================================
 " Vim学习专用快捷键
@@ -79,50 +131,39 @@ nmap <leader>hl :edit ~/vim-learning-guide.md<cr>
 nmap <leader>hp :edit ~/vim-practice.txt<cr>
 
 " 快速运行vimtutor
-nmap <leader>ht :!vimtutor<cr>
-
-" 显示当前模式（学习用）
-set showmode
+nnoremap <leader>ht :!vimtutor<cr>
 
 " 显示按键映射（调试用）
-nmap <leader>hm :map<cr>
+nnoremap <leader>hm :map<cr>
 
 " 打开Vim学习计划
-nmap <leader>hs :edit ~/vim-learning-plan.md<cr>
+nnoremap <leader>hs :edit ~/vim-learning-plan.md<cr>
 
 " 打开Vim插件指南
-nmap <leader>hg :edit ~/vim-plugins-guide.md<cr>
+nnoremap <leader>hg :edit ~/vim-plugins-guide.md<cr>
 
 " ============================================================================
 " 输入法自动切换配置 (macOS)
 " ============================================================================
 
-" 输入法切换函数 (macOS)
-function! IMSelectEnglish()
-    " 尝试多种方法切换到英文输入法
+if has('macunix') && executable('osascript')
+    function! IMSelectEnglish()
+        try
+            call system("osascript -e 'tell application \"System Events\" to keystroke space using control down'")
+            sleep 200m
+        catch
+        endtry
+    endfunction
 
-    " 方法1: 使用系统的快捷键切换 (通常是 Control+Space 或 Fn+Globe)
-    " 这会循环切换输入法，如果当前是中文，通常会切换到英文
-    try
-        " 发送 Control+Space
-        call system("osascript -e 'tell application \"System Events\" to keystroke space using control down'")
-        " 等待一下
-        sleep 200m
+    augroup vim_settings_input_method
+        autocmd!
+        " 退出插入模式时自动切换到英文输入法
+        autocmd InsertLeave * call IMSelectEnglish()
+    augroup END
 
-        " 如果还是不行，再试一次（因为可能需要按两次）
-    catch
-        " 如果AppleScript失败，静默处理
-    endtry
-endfunction
+    " 手动切换到英文输入法的快捷键
+    nnoremap <leader>en :call IMSelectEnglish()<CR>
 
-  " 退出插入模式时自动切换到英文输入法
-  " 进入Normal模式时确保英文输入法
-  " 进入vim时切换到英文输入法
-  " 焦点回到vim时切换到英文输入法
-  autocmd InsertLeave * call IMSelectEnglish()
-
-  " 手动切换到英文输入法的快捷键
-  nnoremap <leader>en :call IMSelectEnglish()<CR>
-
-" 手动切换输入法的快捷键 (模拟 Control+Space)
-nnoremap <leader>im :call system("osascript -e 'tell application \"System Events\" to keystroke space using control down'")<CR>
+    " 手动切换输入法的快捷键 (模拟 Control+Space)
+    nnoremap <leader>im :call system("osascript -e 'tell application \"System Events\" to keystroke space using control down'")<CR>
+endif

@@ -24,9 +24,6 @@ execute 'source ' . s:config_dir . '/settings/plugins.vim'
 " 加载插件特定配置
 execute 'source ' . s:config_dir . '/settings/plugin_configs.vim'
 
-" 在新标签页中打开
-let NERDTreeMapOpenInTab='<ENTER>'
-
 " ----------------------------------------------------------------------------
 " 其他插件配置
 " ----------------------------------------------------------------------------
@@ -35,19 +32,22 @@ let NERDTreeMapOpenInTab='<ENTER>'
 let g:AutoPairsFlyMode = 0
 let g:AutoPairsShortcutBackInsert = '<M-b>'
 
-" Commentary 配置
-autocmd FileType apache setlocal commentstring=#\ %s
+augroup vim_settings_core
+    autocmd!
+    " Commentary 配置
+    autocmd FileType apache setlocal commentstring=#\ %s
+augroup END
 
 " Fugitive 配置（Git集成）
-nmap <leader>gs :Gstatus<CR>
-nmap <leader>gd :Gdiff<CR>
-nmap <leader>gc :Gcommit<CR>
-nmap <leader>gb :Gblame<CR>
-nmap <leader>gl :Glog<CR>
-nmap <leader>gp :Git push<CR>
-nmap <leader>gr :Gread<CR>
-nmap <leader>gw :Gwrite<CR>
-nmap <leader>ge :Gedit<CR>
+nnoremap <leader>gs :Gstatus<CR>
+nnoremap <leader>gd :Gdiff<CR>
+nnoremap <leader>gc :Gcommit<CR>
+nnoremap <leader>gb :Gblame<CR>
+nnoremap <leader>gl :Glog<CR>
+nnoremap <leader>gp :Git push<CR>
+nnoremap <leader>gr :Gread<CR>
+nnoremap <leader>gw :Gwrite<CR>
+nnoremap <leader>ge :Gedit<CR>
 
 " Surround 插件无需额外配置，使用默认快捷键：
 " cs"'  : 将双引号改为单引号

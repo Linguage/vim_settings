@@ -13,6 +13,7 @@ set listchars=tab:▸\ ,trail:•,extends:❯,precedes:❮,nbsp:×,eol:¬
 
 " 高亮当前列
 set cursorcolumn
+set colorcolumn=81,101
 
 " 设置分割线和填充字符
 set fillchars+=vert:┃,fold:─,diff:─
@@ -20,6 +21,10 @@ set fillchars+=vert:┃,fold:─,diff:─
 " 启用通配符菜单
 set wildmenu
 set wildmode=longest:full,full
+
+if exists('+wildoptions')
+    set wildoptions=pum
+endif
 
 " 滚动时保持上下文
 set scrolloff=8

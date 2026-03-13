@@ -1,31 +1,5 @@
 # Changelog
 
-## v3.1 - 2025-06-17 - GitHub Copilot Integration
-
-### 🤖 AI Programming Assistant Added
-
-**GitHub Copilot Integration**:
-- Added GitHub Copilot plugin support
-- Configured optimized keybindings to avoid conflicts with existing shortcuts
-- Added intelligent code completion and suggestion features
-
-**Keybinding Updates**:
-- `Ctrl+G` - Accept Copilot suggestion (replaced potentially conflicting Ctrl+J)
-- `Ctrl+]` - Next suggestion
-- `Ctrl+[` - Previous suggestion  
-- `Ctrl+\` - Dismiss suggestion
-- Added `jk` and `kj` for quick exit from insert mode
-
-**Documentation Updates**:
-- Updated keybinding documentation (both English and Chinese versions)
-- Added Copilot-related command descriptions
-- Updated installation and usage guides
-
-**Bug Fixes**:
-- Fixed issue where insert mode couldn't be exited
-- Resolved keybinding conflicts
-- Optimized plugin loading order
-
 ## v3.0 - 2025-06-16 - Modular Refactor & Optimization
 
 ### 🎯 Major Update: Complete Refactor & Modularization

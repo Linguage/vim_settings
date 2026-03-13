@@ -152,13 +152,14 @@ target/
 # Explicitly keep essential vim configuration files
 !vimrc
 !vim-manager
-!clean_empty_files.sh
 !README.md
 !colors/
 !colors/*.vim
 !plugins/
 !docs/
 !docs/*.md
+!scripts/
+!scripts/*.sh
 
 
 # Keep plugin directories but ignore some generated files within them

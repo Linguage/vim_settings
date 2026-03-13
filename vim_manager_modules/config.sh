@@ -5,8 +5,8 @@
 # ============================================================================
 
 # --- Configuration ---
-VERSION="3.1"
-UPDATED="2025-06-17"
+VERSION="3.2"
+UPDATED="2026-03-13"
 
 # Directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
@@ -19,8 +19,6 @@ PLUGINS=(
     "https://github.com/vim-airline/vim-airline-themes.git vim-airline-themes"
     "https://github.com/preservim/nerdtree.git nerdtree"
     "https://github.com/ryanoasis/vim-devicons.git vim-devicons"
-    "https://github.com/ryanoasis/vim-devicons.git all-the-icons"
-    "https://github.com/nvim-tree/nvim-web-devicons.git nvim-web-devicons"
     "https://github.com/tpope/vim-fugitive.git vim-fugitive"
     "https://github.com/tpope/vim-surround.git vim-surround"
     "https://github.com/tpope/vim-commentary.git vim-commentary"
