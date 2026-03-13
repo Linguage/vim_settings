@@ -127,6 +127,17 @@
 | `<leader>mp`    | 切换 Markdown 预览开关            |
 | `<leader>mc`    | 关闭 Markdown 预览                |
 
+### CSV 工作流
+
+`csv.vim` 没有占用新的全局快捷键，但在打开 `csv` / `tsv` 文件后会自动按列排列，并高亮当前列。
+为了避免卡顿，这个自动排列只对不超过 2 MB 的文件启用。
+
+常用命令：
+- `:CSVTable`：按表格方式查看当前 CSV
+- `:%ArrangeColumn`：手动将整个文件按列排列
+- `:CSVSort`：按列排序
+- `:WhatColumn`：查看光标当前所在列
+
 ### 插入模式快捷键
 
 | 快捷键          | 功能                               |
@@ -168,3 +179,4 @@
 7. 命令面板匹配已调成更收敛的精确匹配；若想直接执行命令，可在 `:Commands` 面板里使用 `Ctrl-x` 或 `Alt-Enter`
 8. 对高频命令额外提供了直达键：`<leader>fe`、`<leader>fq`、`<leader>fQ`、`<leader>fw`、`<leader>fx`
 9. macOS 输入法自动切换默认关闭；如需启用，请在本地配置中设置 `let g:vim_settings_enable_input_method_switch = 1`
+10. CSV 文件现在由 `csv.vim` 增强处理；如果要重新安装该插件，可运行 `./vim-manager install` 或 `./vim-manager update`

@@ -17,6 +17,8 @@ The current configuration is optimized around a few high-frequency workflows:
 - **Editing flow**: soft-wrapped movement follows screen lines, paging recenters automatically, `<F2>` pre-fills substitution commands, and `<M-j>` / `<M-k>` move the current line or selection.
 - **Git workflow**: `vim-fugitive` provides direct status, diff, blame, log, push, read, and write entry points.
 - **Markdown preview**: Markdown files can be previewed directly in the browser.
+- **Tabular data viewing**: `csv.vim` improves the experience of inspecting and tidying CSV files.
+  By default, CSV and TSV files up to 2 MB are auto-arranged into aligned columns and the current column is highlighted.
 - **macOS compatibility**: terminal Esc handling is tightened on macOS, while input-method switching stays disabled by default to avoid terminal automation permission prompts.
 
 ## Optional Dependencies
@@ -44,8 +46,8 @@ If you want to keep simplifying the setup later, these personal or learning-orie
 ## Documentation
 
 - [Keybindings Reference](./docs/reference/keybindings.en.md) - Reference for all custom keybindings and plugin commands
-- [Changelog](./docs/history/changelog.en.md) - Version history and updates
-- [Historical Summary](./docs/history/update-summary.md) - Notes from the earlier refactor and documentation pass
+- [Changelog](./docs/worknotes/changelog.en.md) - Version history and updates
+- [Historical Summary](./docs/worknotes/update-summary.md) - Notes from the earlier refactor and documentation pass
 - [Manager Plan](./docs/plans/vim-manager-device-plan.md) - Cleanup and evolution plan for `vim-manager`
 - [Legacy Notes](./docs/legacy/vim-manager-docs.md) - Older script analysis kept for reference
 
@@ -67,9 +69,9 @@ If you want to keep simplifying the setup later, these personal or learning-orie
 
 This configuration is managed by a simple yet powerful shell script: `vim-manager`.
 
-### Quick Install
+### Fully Automated Install (Recommended)
 
-To set up this configuration on a new machine, follow these steps:
+To set up this configuration on a new machine, the recommended path is the bootstrap script:
 
 1.  Clone this repository to a location of your choice:
     ```bash
@@ -79,24 +81,48 @@ To set up this configuration on a new machine, follow these steps:
     ```bash
     cd ~/vim_settings
     ```
-3.  Make the manager script executable:
+3.  Make the scripts executable:
     ```bash
-    chmod +x vim-manager
+    chmod +x vim-manager scripts/bootstrap.sh scripts/install_dependencies.sh
     ```
-4.  Run the one-click installer:
+4.  Run the bootstrap script:
     ```bash
-    ./vim-manager install
+    ./scripts/bootstrap.sh
     ```
 
-That's it! The script will automatically back up any existing Vim configuration, create the necessary symbolic links, and install all required plugins.
+This will automatically:
+- install external dependencies such as `vim`, `rg`, `fzf`, and `node`
+- back up any existing `~/.vim` and `~/.vimrc`
+- create the required symlinks
+- clone all managed plugins
+- run plugin post-install steps such as the Node app setup for `markdown-preview.nvim`
+
+### Step-By-Step Install
+
+If you prefer to run the steps separately:
+
+```bash
+cd ~/vim_settings
+./scripts/install_dependencies.sh
+./vim-manager install
+```
+
+Or use the built-in manager commands:
+
+```bash
+./vim-manager deps
+./vim-manager install
+```
 
 ### Available Commands
 
 The `vim-manager` script provides a complete set of commands for easy maintenance:
 
-- **`./vim-manager install`** - One-click setup of configuration and all plugins
-- **`./vim-manager update`** - Update all installed plugins to their latest versions
-- **`./vim-manager status`** - Check symlinks, managed plugins, and unmanaged plugin directories
+- **`./vim-manager deps`** - Install external dependencies such as `vim`, `rg`, `fzf`, and `node`
+- **`./vim-manager install`** - Link the config, install managed plugins, and run plugin post-install steps
+- **`./vim-manager bootstrap`** - Run dependency installation and full config/plugin setup from scratch
+- **`./vim-manager update`** - Update all installed plugins and rerun plugin post-install steps
+- **`./vim-manager status`** - Check dependencies, symlinks, managed plugins, and unmanaged plugin directories
 - **`./vim-manager clean`** - Remove plugin directories not listed in the manifest
 - **`./vim-manager uninstall`** - Remove symlinks created by the manager without deleting the repository
 - **`./vim-manager help`** - Display help information
@@ -119,7 +145,10 @@ This design provides:
 - **Clear Code Organization**: Logic separation for easier understanding
 - **Easy Extension**: New features can be developed and tested independently
 
-Auxiliary maintenance scripts are now collected under `scripts/`. The remaining helper script is `scripts/cleanup.sh`, which cleans temporary files and empty directories under the project root.
+Auxiliary maintenance scripts are collected under `scripts/`:
+- `scripts/install_dependencies.sh` installs external dependencies
+- `scripts/bootstrap.sh` runs the full bootstrap flow
+- `scripts/cleanup.sh` cleans temporary files and empty directories under the project root
 
 ## Included Plugins
 
@@ -135,6 +164,7 @@ Auxiliary maintenance scripts are now collected under `scripts/`. The remaining 
 | `vim-polyglot` | Language support | Syntax highlighting for multiple programming languages |
 | `auto-pairs` | Auto pairing | Automatic matching of brackets, quotes, etc. |
 | `vim-sensible` | Sensible defaults | Provides sensible Vim default settings |
+| `csv.vim` | CSV viewing | Improves column-aware viewing and editing for CSV files |
 | `markdown-preview.nvim` | Markdown preview | Preview Markdown in a browser |
 | `vim-which-key` | Key hinting | Shows available Leader key groups and commands |
 

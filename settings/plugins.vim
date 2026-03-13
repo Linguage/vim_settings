@@ -30,6 +30,7 @@ if isdirectory(s:plugin_dir)
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-polyglot'
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-devicons'
     execute 'set runtimepath+=' . s:plugin_dir . '/fzf.vim'
+    execute 'set runtimepath+=' . s:plugin_dir . '/csv.vim'
     " Markdown preview plugin
     execute 'set runtimepath+=' . s:plugin_dir . '/markdown-preview.nvim'
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-which-key'

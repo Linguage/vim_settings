@@ -195,6 +195,22 @@ else
 endif
 
 " ----------------------------------------------------------------------------
+" CSV 配置
+" ----------------------------------------------------------------------------
+
+" csv.vim 默认不会把文件直接排版成表格，这里开启更直观的自动排列体验。
+" 大文件自动跳过，避免明显拖慢 Vim。
+let g:csv_autocmd_arrange = 1
+let g:csv_autocmd_arrange_size = 2 * 1024 * 1024
+let g:csv_highlight_column = 'y'
+
+augroup vim_settings_csv
+    autocmd!
+    autocmd BufRead,BufNewFile *.csv,*.dat setfiletype csv
+    autocmd BufRead,BufNewFile *.tsv,*.tab let b:delimiter = "\t" | setfiletype csv
+augroup END
+
+" ----------------------------------------------------------------------------
 " Markdown Preview 配置
 " ----------------------------------------------------------------------------
 

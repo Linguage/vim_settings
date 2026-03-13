@@ -17,6 +17,8 @@
 - **常用编辑动作**：软换行按屏幕行移动，翻页后自动居中，`<F2>` 预填充替换命令，`<M-j>` / `<M-k>` 上下移动当前行或选区。
 - **Git 操作**：通过 `vim-fugitive` 提供状态、diff、blame、log、push 等常用入口。
 - **Markdown 预览**：在 Markdown 文件中可直接调用浏览器预览。
+- **表格数据查看**：通过 `csv.vim` 改善 CSV 文件的列感知查看与整理体验。
+  默认会对不超过 2 MB 的 CSV / TSV 文件自动按列排列，并高亮当前列。
 - **macOS 兼容性**：在 macOS 下优化终端 Esc 响应；输入法切换逻辑默认关闭，避免终端触发系统自动化权限弹窗。
 
 ## 可选依赖
@@ -59,9 +61,9 @@
 
 本配置通过一个简单而强大的 shell 脚本 `vim-manager` 进行管理。
 
-### 快速安装
+### 全自动安装（推荐）
 
-在新机器上设置此配置，请按照以下步骤操作：
+在新机器上设置此配置，推荐直接运行 bootstrap 脚本：
 
 1.  将本仓库克隆到您选择的位置：
     ```bash
@@ -71,24 +73,48 @@
     ```bash
     cd ~/vim_settings
     ```
-3.  使管理脚本可执行：
+3.  使脚本可执行：
     ```bash
-    chmod +x vim-manager
+    chmod +x vim-manager scripts/bootstrap.sh scripts/install_dependencies.sh
     ```
-4.  运行一键安装程序：
+4.  运行一键 bootstrap：
     ```bash
-    ./vim-manager install
+    ./scripts/bootstrap.sh
     ```
 
-安装完成！脚本将自动备份现有的 Vim 配置，创建必要的符号链接，并安装所有必需的插件。
+这会自动完成以下步骤：
+- 安装系统依赖：`vim`、`rg`、`fzf`、`node`
+- 备份已有的 `~/.vim` / `~/.vimrc`
+- 创建符号链接
+- 克隆托管插件
+- 执行插件后安装步骤，例如 `markdown-preview.nvim` 的 Node 依赖安装
+
+### 分步安装
+
+如果你希望分开执行，也可以按下面的顺序来：
+
+```bash
+cd ~/vim_settings
+./scripts/install_dependencies.sh
+./vim-manager install
+```
+
+或者使用 `vim-manager` 内置命令：
+
+```bash
+./vim-manager deps
+./vim-manager install
+```
 
 ### 可用命令
 
 `vim-manager` 脚本提供了一套完整的命令，方便维护：
 
-- **`./vim-manager install`** - 一键安装配置和所有插件
-- **`./vim-manager update`** - 更新所有已安装的插件到最新版本
-- **`./vim-manager status`** - 检查符号链接、托管插件和未托管插件状态
+- **`./vim-manager deps`** - 安装外部依赖（`vim`、`rg`、`fzf`、`node` 等）
+- **`./vim-manager install`** - 链接配置、安装托管插件，并执行插件后安装步骤
+- **`./vim-manager bootstrap`** - 从零开始完成依赖安装、配置链接和插件安装
+- **`./vim-manager update`** - 更新所有已安装插件，并重新执行插件后安装步骤
+- **`./vim-manager status`** - 检查依赖、符号链接、托管插件和未托管插件状态
 - **`./vim-manager clean`** - 清理不在管理清单中的插件目录
 - **`./vim-manager uninstall`** - 移除由脚本创建的符号链接，不删除仓库本身
 - **`./vim-manager help`** - 显示帮助信息
@@ -111,7 +137,10 @@ vim_manager_modules/
 - **清晰的代码组织**：逻辑分离，易于理解
 - **便于扩展**：新功能可以独立开发和测试
 
-辅助维护脚本统一收纳在 `scripts/` 目录中。当前保留的辅助脚本是 `scripts/cleanup.sh`，用于清理项目根目录中的临时文件和空目录。
+辅助维护脚本统一收纳在 `scripts/` 目录中：
+- `scripts/install_dependencies.sh`：安装外部依赖
+- `scripts/bootstrap.sh`：执行完整 bootstrap
+- `scripts/cleanup.sh`：清理项目根目录中的临时文件和空目录
 
 ## 包含的插件
 
@@ -127,6 +156,7 @@ vim_manager_modules/
 | `vim-polyglot` | 语言支持 | 多种编程语言的语法高亮 |
 | `auto-pairs` | 自动配对 | 自动匹配括号、引号等 |
 | `vim-sensible` | 合理默认 | 提供合理的 Vim 默认设置 |
+| `csv.vim` | CSV 查看 | 改善 CSV 文件的列感知显示与处理 |
 | `markdown-preview.nvim` | Markdown 预览 | 在浏览器中预览 Markdown |
 | `vim-which-key` | 快捷键提示 | 显示 Leader 键可用分组与命令 |
 
@@ -171,8 +201,8 @@ vim_settings/
 ## 文档
 
 - [快捷键指南](./docs/reference/keybindings.zh.md) - 所有自定义快捷键和插件命令的参考
-- [更新日志](./docs/history/changelog.zh.md) - 版本更新历史记录
-- [历史总结](./docs/history/update-summary.md) - 早期重构与文档更新总结
+- [更新日志](./docs/worknotes/changelog.zh.md) - 版本更新历史记录
+- [历史总结](./docs/worknotes/update-summary.md) - 早期重构与文档更新总结
 - [管理脚本计划](./docs/plans/vim-manager-device-plan.md) - `vim-manager` 的整理与演进计划
 - [遗留文档](./docs/legacy/vim-manager-docs.md) - 旧版脚本分析与历史说明
 

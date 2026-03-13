@@ -127,6 +127,17 @@ These are the highest-value daily entry points and worth memorizing first.
 | `<leader>mp`    | Toggle Markdown preview              |
 | `<leader>mc`    | Stop Markdown preview                |
 
+### CSV Workflow
+
+`csv.vim` does not add new global mappings here, but when you open `csv` or `tsv` files it now auto-arranges columns and highlights the current column.
+To avoid slowing Vim down, this auto-arrange behavior only applies to files up to 2 MB.
+
+Common commands:
+- `:CSVTable` - view the current file as a table
+- `:%ArrangeColumn` - manually align the whole file into columns
+- `:CSVSort` - sort by column
+- `:WhatColumn` - show which column the cursor is currently in
+
 ### Insert Mode Keybindings
 
 | Keybinding      | Action                               |
@@ -168,3 +179,4 @@ This configuration provides several useful custom commands:
 7. Command matching is tuned to be stricter with exact matching; inside `:Commands`, use `Ctrl-x` or `Alt-Enter` to execute the highlighted command directly
 8. High-frequency commands also get direct shortcuts: `<leader>fe`, `<leader>fq`, `<leader>fQ`, `<leader>fw`, and `<leader>fx`
 9. Automatic macOS input-method switching is disabled by default; enable it in local config with `let g:vim_settings_enable_input_method_switch = 1`
+10. CSV files are now enhanced by `csv.vim`; run `./vim-manager install` or `./vim-manager update` if you need to reinstall the plugin

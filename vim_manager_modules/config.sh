@@ -5,7 +5,7 @@
 # ============================================================================
 
 # --- Configuration ---
-VERSION="3.2"
+VERSION="3.3"
 UPDATED="2026-03-13"
 
 # Directories
@@ -26,8 +26,18 @@ PLUGINS=(
     "https://github.com/jiangmiao/auto-pairs.git auto-pairs"
     "https://github.com/tpope/vim-sensible.git vim-sensible"
     "https://github.com/junegunn/fzf.vim.git fzf.vim"
+    "https://github.com/chrisbra/csv.vim.git csv.vim"
     "https://github.com/iamcco/markdown-preview.nvim.git markdown-preview.nvim"
     "https://github.com/liuchengxu/vim-which-key.git vim-which-key"
+)
+
+# --- External Tool Checks ---
+REQUIRED_TOOLS=(
+    "git"
+    "vim"
+    "rg"
+    "fzf"
+    "node"
 )
 
 # --- Colors and Formatting ---

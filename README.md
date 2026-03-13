@@ -28,8 +28,11 @@ git clone <your-repo-url> ~/vim_settings
 # 进入目录
 cd ~/vim_settings
 
-# 一键安装
-./vim-manager install
+# 给脚本执行权限
+chmod +x vim-manager scripts/bootstrap.sh scripts/install_dependencies.sh
+
+# 全自动安装依赖、配置与插件
+./scripts/bootstrap.sh
 ```
 
 ## 📚 文档
@@ -37,7 +40,7 @@ cd ~/vim_settings
 - [English Documentation](README.en.md) - 英文文档
 - [中文文档](README.zh.md) - 详细的中文说明
 - [快捷键参考](./docs/reference/keybindings.zh.md) - 按键绑定和命令参考
-- [更新日志](./docs/history/changelog.zh.md) - 版本历史和变更记录
+- [更新日志](./docs/worknotes/changelog.zh.md) - 版本历史和变更记录
 - [文档规划](./docs/plans/vim-manager-device-plan.md) - 结构和演进计划
 
 ## 🗂️ 目录说明
@@ -55,14 +58,19 @@ cd ~/vim_settings
 
 | 命令 | 功能 | 说明 |
 |------|------|------|
-| `./vim-manager install` | 安装 | 一键安装配置和所有插件 |
-| `./vim-manager update` | 更新 | 更新所有插件到最新版本 |
-| `./vim-manager status` | 状态 | 检查符号链接、托管插件和未托管插件 |
+| `./vim-manager deps` | 依赖 | 安装外部依赖，如 `vim`、`rg`、`fzf`、`node` |
+| `./vim-manager install` | 安装 | 链接配置、安装托管插件并执行插件后安装步骤 |
+| `./vim-manager bootstrap` | 全装 | 从零开始安装依赖、配置与插件 |
+| `./vim-manager update` | 更新 | 更新所有插件并重新执行插件后安装步骤 |
+| `./vim-manager status` | 状态 | 检查依赖、符号链接、托管插件和未托管插件 |
 | `./vim-manager clean` | 清理 | 移除未管理的插件 |
 | `./vim-manager uninstall` | 卸载 | 移除由脚本创建的符号链接 |
 | `./vim-manager help` | 帮助 | 显示帮助信息 |
 
-辅助维护脚本位于 `scripts/cleanup.sh`，用于清理项目根目录中的临时文件和空目录。
+辅助维护脚本位于 `scripts/`：
+- `scripts/install_dependencies.sh`：安装依赖
+- `scripts/bootstrap.sh`：执行全自动安装
+- `scripts/cleanup.sh`：清理项目根目录中的临时文件和空目录
 
 ## 📊 版本亮点
 
