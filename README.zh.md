@@ -10,21 +10,24 @@
 
 这套配置目前重点覆盖以下几类高频工作流：
 
-- **项目内导航**：`<C-p>` 使用 `:find` 查找文件，`<C-y>` / `<leader>n` 打开文件树，`<leader>f` 在 NERDTree 中定位当前文件。
+- **项目内导航**：`<C-p>` 使用标准 `fzf.vim` 进行项目级文件查找；`<C-y>` / `<leader>n` 切换文件树，`<leader>nf` 在 NERDTree 中定位当前文件。
+- **命令面板工作流**：`<leader>fc` 打开命令面板，`<leader>fb` 打开缓冲区面板，`<leader>fh` 打开命令历史，尽量减少对底部命令行的依赖。
+- **高频 Ex 命令**：`<leader>fe` 预填充 `:edit`，`<leader>fq` 在未保存时弹出确认后关闭窗口，`<leader>fQ` 强制退出全部，`<leader>fw` 保存，`<leader>fx` 保存并退出。
 - **搜索与结果跳转**：`<leader>gg` 和 `:LiveGrep` 通过 `rg` 将结果送入 quickfix，配合 `<leader>co`、`<leader>cn`、`<leader>cp`、`[q`、`]q` 快速跳转。
 - **常用编辑动作**：软换行按屏幕行移动，翻页后自动居中，`<F2>` 预填充替换命令，`<M-j>` / `<M-k>` 上下移动当前行或选区。
 - **Git 操作**：通过 `vim-fugitive` 提供状态、diff、blame、log、push 等常用入口。
 - **Markdown 预览**：在 Markdown 文件中可直接调用浏览器预览。
-- **macOS 兼容性**：在 macOS 下优化终端 Esc 响应，并仅在 `osascript` 可用时启用输入法切换逻辑。
+- **macOS 兼容性**：在 macOS 下优化终端 Esc 响应；输入法切换逻辑默认关闭，避免终端触发系统自动化权限弹窗。
 
 ## 可选依赖
 
 不是所有功能都依赖系统额外安装，但下面这些依赖会明显影响体验：
 
 - **`rg`**：用于 `:LiveGrep` 和 `<leader>gg` 的项目全文搜索。未安装时，搜索工作流会退化。
+- **`fzf`**：用于 `<C-p>` 的标准项目文件查找。未安装时，会回退到内置 `:find`。
 - **Nerd Font**：用于状态栏和文件树图标显示。未安装时功能仍可使用，但图标会显示异常。
 - **支持 `+clipboard` 的 Vim**：用于系统剪贴板互通。未启用时，`<leader>y` / `<leader>p` 的体验会受限。
-- **macOS `osascript`**：当前输入法切换逻辑基于 AppleScript，仅在 macOS 下有效。
+- **macOS `osascript`**：输入法切换逻辑基于 AppleScript，仅在 macOS 下有效；如需启用，请显式打开本地开关。
 - **终端 Vim**：macOS 下会额外启用较短的 `ttimeoutlen`，改善 Esc 和 Alt 组合键的响应体验。
 
 ## 个人与学习型映射

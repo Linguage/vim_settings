@@ -10,7 +10,7 @@ let g:mapleader = " "
 nnoremap <leader>w :w!<cr>
 
 " 快速退出
-nnoremap <leader>q :q<cr>
+nnoremap <leader>q :confirm q<cr>
 nnoremap <leader>Q :qa!<cr>
 
 " 快速编辑vimrc
@@ -28,8 +28,20 @@ nnoremap <leader>vim :vs $MYVIMRC<cr>
 " 清除搜索高亮
 nnoremap <leader>/ :nohlsearch<cr>
 
-" 使用 :find 在项目内查找文件
-nnoremap <C-p> :find <Space>
+" 解绑 <leader>f，后续再决定它的用途
+nnoremap <leader>f <Nop>
+
+" 使用项目文件选择器查找文件
+nnoremap <silent> <C-p> :ProjectFiles<CR>
+nnoremap <silent> <leader>fc :Commands<CR>
+nnoremap <silent> <leader>fb :Buffers<CR>
+nnoremap <silent> <leader>fh :History:<CR>
+nnoremap <silent> <leader>fe :call feedkeys(':edit ', 'nt')<CR>
+nnoremap <silent> <leader>fE :call feedkeys(':edit %:h/', 'nt')<CR>
+nnoremap <silent> <leader>fq :confirm q<CR>
+nnoremap <silent> <leader>fQ :qa!<CR>
+nnoremap <silent> <leader>fw :w<CR>
+nnoremap <silent> <leader>fx :wq<CR>
 
 " 窗口切换
 nnoremap <C-h> <C-w>h
@@ -144,9 +156,20 @@ nnoremap <leader>hg :edit ~/vim-plugins-guide.md<cr>
 
 " ============================================================================
 " 输入法自动切换配置 (macOS)
+" 默认关闭，避免终端触发系统自动化权限弹窗。
+" 如需启用，在本地配置中设置：
+"   let g:vim_settings_enable_input_method_switch = 1
 " ============================================================================
 
-if has('macunix') && executable('osascript')
+if !exists('g:vim_settings_enable_input_method_switch')
+    let g:vim_settings_enable_input_method_switch = 0
+endif
+
+augroup vim_settings_input_method
+    autocmd!
+augroup END
+
+if has('macunix') && executable('osascript') && g:vim_settings_enable_input_method_switch
     function! IMSelectEnglish()
         try
             call system("osascript -e 'tell application \"System Events\" to keystroke space using control down'")
@@ -156,7 +179,6 @@ if has('macunix') && executable('osascript')
     endfunction
 
     augroup vim_settings_input_method
-        autocmd!
         " 退出插入模式时自动切换到英文输入法
         autocmd InsertLeave * call IMSelectEnglish()
     augroup END

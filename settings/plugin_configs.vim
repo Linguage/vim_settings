@@ -107,10 +107,92 @@ augroup END
 
 " NERDTree 快捷键 - 使用<leader>n切换NERDTree
 nnoremap <silent> <leader>n :NERDTreeToggle<CR>
-nnoremap <silent> <leader>f :NERDTreeFind<CR>
+nnoremap <silent> <leader>nf :NERDTreeFind<CR>
 
 " 在新标签页中打开文件
 let NERDTreeMapOpenInTab='<ENTER>'
+
+" ----------------------------------------------------------------------------
+" FZF 文件选择器配置
+" ----------------------------------------------------------------------------
+
+if isdirectory(s:plugin_root . '/fzf.vim')
+    let g:fzf_action = {
+        \ 'ctrl-t': 'tab split',
+        \ 'ctrl-x': 'split',
+        \ 'ctrl-v': 'vsplit'
+    \ }
+    let g:fzf_vim = get(g:, 'fzf_vim', {})
+    let g:fzf_vim.commands_expect = 'ctrl-x,alt-enter'
+    let g:fzf_vim.commands_options = [
+        \ '--layout=reverse',
+        \ '--info=inline',
+        \ '--exact',
+        \ '--no-sort'
+    \ ]
+    let g:fzf_vim.buffers_options = [
+        \ '--layout=reverse',
+        \ '--info=inline'
+    \ ]
+    let g:fzf_vim.history_options = [
+        \ '--layout=reverse',
+        \ '--info=inline'
+    \ ]
+    let g:fzf_layout = {
+        \ 'window': {
+        \   'width': 0.88,
+        \   'height': 0.70,
+        \   'xoffset': 0.5,
+        \   'yoffset': 0.5,
+        \   'border': 'rounded'
+        \ }
+    \ }
+
+    function! s:ProjectRoot() abort
+        let l:start = expand('%:p:h')
+        if empty(l:start)
+            let l:start = getcwd()
+        endif
+
+        let l:git_root = systemlist('git -C ' . shellescape(l:start) . ' rev-parse --show-toplevel')
+        if v:shell_error == 0 && !empty(l:git_root)
+            return l:git_root[0]
+        endif
+
+        return l:start
+    endfunction
+
+    function! s:ProjectFiles() abort
+        let l:root = s:ProjectRoot()
+        let l:spec = fzf#vim#with_preview({
+                    \ 'dir': l:root,
+                    \ 'options': ['--layout=reverse', '--info=inline', '--prompt', 'Files> ']
+                    \ })
+
+        let l:is_git_root = systemlist('git -C ' . shellescape(l:root) . ' rev-parse --show-toplevel')
+        if v:shell_error == 0 && !empty(l:is_git_root)
+            call fzf#vim#gitfiles('', l:spec, 0)
+        else
+            call fzf#vim#files(l:root, l:spec, 0)
+        endif
+    endfunction
+
+    function! s:ProjectExplorer() abort
+        let l:root = s:ProjectRoot()
+        execute 'cd ' . fnameescape(l:root)
+        execute 'NERDTree ' . fnameescape(l:root)
+    endfunction
+
+    command! ProjectFiles call <SID>ProjectFiles()
+    command! ProjectExplorer call <SID>ProjectExplorer()
+else
+    function! s:ProjectFilesFallback() abort
+        call feedkeys(":find ", 'n')
+    endfunction
+
+    command! ProjectFiles call <SID>ProjectFilesFallback()
+    command! ProjectExplorer NERDTree
+endif
 
 " ----------------------------------------------------------------------------
 " Markdown Preview 配置
@@ -131,6 +213,7 @@ let g:mkdp_filetypes = ['markdown', 'mkd', 'md', 'pandoc']
 " 启动/关闭预览的快捷键
 nnoremap <silent> <leader>mp :MarkdownPreviewToggle<CR>
 nnoremap <silent> <leader>mo :MarkdownPreview<CR>
+nnoremap <silent> <leader>md :MarkdownPreview<CR>
 nnoremap <silent> <leader>mc :MarkdownPreviewStop<CR>
 
 " ----------------------------------------------------------------------------
@@ -141,8 +224,8 @@ nnoremap <silent> <leader>mc :MarkdownPreviewStop<CR>
 set timeout
 set timeoutlen=400
 
-" 在按下 <leader> 时弹出 which-key
-nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+" 在按下 <leader><leader> 时弹出 which-key，避免和 leader 组合键冲突
+nnoremap <silent> <leader><leader> :WhichKey '<Space>'<CR>
 
 " 可选：为分组起名，展示更友好
 let g:which_key_map = {}

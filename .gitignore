@@ -13,6 +13,7 @@ Session.vim
 
 # Vim undo files
 *.un~
+undo/
 
 # Vim view files
 .vimviews

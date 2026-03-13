@@ -10,21 +10,24 @@ The recommended setup is to symlink your home `.vim` directory to this repositor
 
 The current configuration is optimized around a few high-frequency workflows:
 
-- **Project navigation**: use `<C-p>` with `:find`, `<C-y>` / `<leader>n` to toggle the file tree, and `<leader>f` to reveal the current file in NERDTree.
+- **Project navigation**: use `<C-p>` for standard `fzf.vim` project file search; `<C-y>` / `<leader>n` toggles the file tree, and `<leader>nf` reveals the current file in NERDTree.
+- **Command palette workflow**: use `<leader>fc` for commands, `<leader>fb` for buffers, and `<leader>fh` for command history to reduce reliance on the bottom command line.
+- **High-frequency Ex commands**: `<leader>fe` pre-fills `:edit`, `<leader>fq` closes the window with a save/discard prompt when modified, `<leader>fQ` force-quits all windows, `<leader>fw` saves, and `<leader>fx` saves then quits.
 - **Search and jump**: `<leader>gg` and `:LiveGrep` send `rg` results into quickfix, then `<leader>co`, `<leader>cn`, `<leader>cp`, `[q`, and `]q` drive result navigation.
 - **Editing flow**: soft-wrapped movement follows screen lines, paging recenters automatically, `<F2>` pre-fills substitution commands, and `<M-j>` / `<M-k>` move the current line or selection.
 - **Git workflow**: `vim-fugitive` provides direct status, diff, blame, log, push, read, and write entry points.
 - **Markdown preview**: Markdown files can be previewed directly in the browser.
-- **macOS compatibility**: terminal Esc handling is tightened on macOS, and input-method switching is enabled only when `osascript` is available.
+- **macOS compatibility**: terminal Esc handling is tightened on macOS, while input-method switching stays disabled by default to avoid terminal automation permission prompts.
 
 ## Optional Dependencies
 
 Not every feature requires extra system tools, but these dependencies materially affect the experience:
 
 - **`rg`**: required for `:LiveGrep` and `<leader>gg` project-wide search. Without it, the search workflow degrades.
+- **`fzf`**: powers the standard project file picker behind `<C-p>`. Without it, the mapping falls back to built-in `:find`.
 - **Nerd Font**: required for correct statusline and file-tree icon rendering.
 - **Vim with `+clipboard`**: needed for smooth system clipboard integration.
-- **macOS `osascript`**: the input-method switching logic currently depends on AppleScript and is macOS-specific.
+- **macOS `osascript`**: the input-method switching logic depends on AppleScript, is macOS-specific, and should be enabled explicitly in local config.
 - **Terminal Vim**: on macOS the configuration applies a shorter `ttimeoutlen` to improve Esc and Alt-key responsiveness.
 
 ## Personal And Learning Mappings

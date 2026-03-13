@@ -10,6 +10,8 @@ The `Leader` key is a special key used to prefix many custom shortcuts. In this 
 
 So, when you see `<leader>w`, it means you should press `Space` followed by `w`.
 
+If you want to open the which-key helper menu, use `<leader><leader>`, meaning press `Space` twice.
+
 ---
 
 ## Global Keybindings
@@ -21,13 +23,22 @@ These shortcuts are available globally in Normal mode unless specified otherwise
 | Keybinding      | Action                               |
 | --------------- | ------------------------------------ |
 | `<leader>w`     | Save the current file (`:w!`)        |
-| `<leader>q`     | Close the current window (`:q`)      |
+| `<leader>q`     | Close the current window with a save/discard prompt when modified (`:confirm q`) |
 | `<leader>Q`     | Force quit all windows (`:qa!`)      |
 | `<leader>e`     | Edit your `vimrc` file               |
 | `<leader>vim`   | Open the active `vimrc` in a vertical split |
 | `<leader>r`     | Reload your `vimrc` file             |
 | `<leader>/`     | Clear search highlighting            |
-| `<C-p>`         | Find files inside the project with `:find` |
+| `<C-p>`         | Open the project-scoped FZF file picker |
+| `<leader>fc`    | Open the command palette (`:Commands`) |
+| `<leader>fb`    | Open the buffer palette (`:Buffers`) |
+| `<leader>fh`    | Open the command history palette (`:History:`) |
+| `<leader>fe`    | Pre-fill the `:edit ` command        |
+| `<leader>fE`    | Pre-fill `:edit` from the current directory |
+| `<leader>fq`    | Close the current window with a save/discard prompt when modified (`:confirm q`) |
+| `<leader>fQ`    | Force quit all windows (`:qa!`)      |
+| `<leader>fw`    | Save the current file (`:w`)         |
+| `<leader>fx`    | Save and quit (`:wq`)                |
 
 These are the highest-value daily entry points and worth memorizing first.
 
@@ -89,7 +100,7 @@ These are the highest-value daily entry points and worth memorizing first.
 | --------------- | ------------------------------------ |
 | `<C-y>`         | Toggle the NERDTree file explorer    |
 | `<leader>n`     | Toggle the NERDTree file explorer    |
-| `<leader>f`     | Find and reveal the current file in NERDTree |
+| `<leader>nf`    | Find and reveal the current file in NERDTree |
 | `<leader>cd`    | Change working directory to the current file and sync NERDTree |
 | `<Enter>`       | (In NERDTree) Open selected file in a new tab |
 
@@ -106,6 +117,15 @@ These are the highest-value daily entry points and worth memorizing first.
 | `<leader>gr`    | Read the file from Git               |
 | `<leader>gw`    | Write the file into the Git index    |
 | `<leader>ge`    | Open the current file through Fugitive |
+
+### Markdown Preview
+
+| Keybinding      | Action                               |
+| --------------- | ------------------------------------ |
+| `<leader>mo`    | Open Markdown preview in the browser |
+| `<leader>md`    | Open Markdown preview in the browser |
+| `<leader>mp`    | Toggle Markdown preview              |
+| `<leader>mc`    | Stop Markdown preview                |
 
 ### Insert Mode Keybindings
 
@@ -126,8 +146,8 @@ These are the highest-value daily entry points and worth memorizing first.
 | `<leader>hs`    | Open the Vim learning plan           |
 | `<leader>hg`    | Open the Vim plugins guide           |
 | `<leader>hm`    | Show the current mapping table       |
-| `<leader>en`    | Switch to the English input method, available only on macOS with `osascript` |
-| `<leader>im`    | Trigger input-method switching manually, available only on macOS with `osascript` |
+| `<leader>en`    | Switch to the English input method after enabling the input-method helper |
+| `<leader>im`    | Trigger input-method switching manually after enabling the input-method helper |
 
 ## Custom Commands
 
@@ -143,3 +163,8 @@ This configuration provides several useful custom commands:
 2. Use `:map` to inspect the current mapping table
 3. To modify any keybinding, edit `settings/mappings.vim`
 4. If `:LiveGrep` is unavailable, make sure `rg` is installed
+5. File search uses the standard `fzf.vim` project picker; inside a Git repo it prefers Git-tracked files, and outside Git it falls back to regular file search
+6. Common Ex workflows can use centered `fzf.vim` panels instead of the bottom command line: `<leader>fc` opens commands, `<leader>fb` opens buffers, and `<leader>fh` opens command history
+7. Command matching is tuned to be stricter with exact matching; inside `:Commands`, use `Ctrl-x` or `Alt-Enter` to execute the highlighted command directly
+8. High-frequency commands also get direct shortcuts: `<leader>fe`, `<leader>fq`, `<leader>fQ`, `<leader>fw`, and `<leader>fx`
+9. Automatic macOS input-method switching is disabled by default; enable it in local config with `let g:vim_settings_enable_input_method_switch = 1`

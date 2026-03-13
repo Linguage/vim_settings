@@ -10,6 +10,8 @@
 
 所以，当你看到 `<leader>w` 这样的快捷键时，意味着你需要先按 `空格` 键，然后再按 `w` 键。
 
+如果想查看 which-key 提示菜单，现在使用 `<leader><leader>`，也就是连按两次 `空格`。
+
 ---
 
 ## 全局快捷键
@@ -21,13 +23,22 @@
 | 快捷键          | 功能                               |
 | --------------- | ---------------------------------- |
 | `<leader>w`     | 保存当前文件 (`:w!`)              |
-| `<leader>q`     | 关闭当前窗口 (`:q`)                |
+| `<leader>q`     | 关闭当前窗口，未保存时弹出确认 (`:confirm q`) |
 | `<leader>Q`     | 强制关闭所有窗口 (`:qa!`)          |
 | `<leader>e`     | 编辑 `vimrc` 文件                  |
 | `<leader>vim`   | 垂直分屏打开当前默认 `vimrc`       |
 | `<leader>r`     | 重新加载 `vimrc` 文件              |
 | `<leader>/`     | 清除搜索高亮                      |
-| `<C-p>`         | 使用 `:find` 在项目内查找文件      |
+| `<C-p>`         | 打开项目级 FZF 文件选择器         |
+| `<leader>fc`    | 打开命令面板 (`:Commands`)        |
+| `<leader>fb`    | 打开缓冲区面板 (`:Buffers`)       |
+| `<leader>fh`    | 打开命令历史面板 (`:History:`)    |
+| `<leader>fe`    | 预填充 `:edit ` 命令              |
+| `<leader>fE`    | 预填充当前目录下的 `:edit` 命令   |
+| `<leader>fq`    | 关闭当前窗口，未保存时弹出确认 (`:confirm q`) |
+| `<leader>fQ`    | 强制关闭全部窗口 (`:qa!`)         |
+| `<leader>fw`    | 保存当前文件 (`:w`)               |
+| `<leader>fx`    | 保存并退出 (`:wq`)                |
 
 这组映射属于最核心的日常入口，建议优先记忆。
 
@@ -89,7 +100,7 @@
 | --------------- | ---------------------------------- |
 | `<C-y>`         | 切换 NERDTree 文件浏览器          |
 | `<leader>n`     | 切换 NERDTree 文件浏览器          |
-| `<leader>f`     | 在 NERDTree 中定位并显示当前文件  |
+| `<leader>nf`    | 在 NERDTree 中定位并显示当前文件  |
 | `<leader>cd`    | 切换工作目录到当前文件并同步 NERDTree |
 | `<Enter>`       | （在 NERDTree 中）在新标签页打开选中的文件 |
 
@@ -106,6 +117,15 @@
 | `<leader>gr`    | 从 Git 读取版本                   |
 | `<leader>gw`    | 将当前文件写入 Git 索引           |
 | `<leader>ge`    | 用 Fugitive 打开当前文件          |
+
+### Markdown 预览
+
+| 快捷键          | 功能                               |
+| --------------- | ---------------------------------- |
+| `<leader>mo`    | 打开 Markdown 浏览器预览          |
+| `<leader>md`    | 打开 Markdown 浏览器预览          |
+| `<leader>mp`    | 切换 Markdown 预览开关            |
+| `<leader>mc`    | 关闭 Markdown 预览                |
 
 ### 插入模式快捷键
 
@@ -126,8 +146,8 @@
 | `<leader>hs`    | 打开 Vim 学习计划                  |
 | `<leader>hg`    | 打开 Vim 插件指南                  |
 | `<leader>hm`    | 输出当前映射列表                   |
-| `<leader>en`    | 手动切换到英文输入法，仅在 macOS + `osascript` 下可用 |
-| `<leader>im`    | 手动触发输入法切换，仅在 macOS + `osascript` 下可用 |
+| `<leader>en`    | 手动切换到英文输入法，仅在启用输入法切换功能后可用 |
+| `<leader>im`    | 手动触发输入法切换，仅在启用输入法切换功能后可用 |
 
 ## 自定义命令
 
@@ -143,3 +163,8 @@
 2. 使用 `:map` 命令可以查看当前所有映射
 3. 要修改任何快捷键，请编辑 `settings/mappings.vim` 文件
 4. 如果 `:LiveGrep` 不可用，请先确认系统中已安装 `rg`
+5. 文件查找默认使用 `fzf.vim` 的标准项目选择器；在 Git 仓库中优先列出 Git 跟踪文件，非 Git 目录则回退到普通文件查找
+6. 常用 Ex 命令可通过居中的 `fzf.vim` 面板替代底部命令行：`<leader>fc` 打开命令面板，`<leader>fb` 打开缓冲区面板，`<leader>fh` 打开命令历史
+7. 命令面板匹配已调成更收敛的精确匹配；若想直接执行命令，可在 `:Commands` 面板里使用 `Ctrl-x` 或 `Alt-Enter`
+8. 对高频命令额外提供了直达键：`<leader>fe`、`<leader>fq`、`<leader>fQ`、`<leader>fw`、`<leader>fx`
+9. macOS 输入法自动切换默认关闭；如需启用，请在本地配置中设置 `let g:vim_settings_enable_input_method_switch = 1`

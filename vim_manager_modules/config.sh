@@ -25,6 +25,7 @@ PLUGINS=(
     "https://github.com/sheerun/vim-polyglot.git vim-polyglot"
     "https://github.com/jiangmiao/auto-pairs.git auto-pairs"
     "https://github.com/tpope/vim-sensible.git vim-sensible"
+    "https://github.com/junegunn/fzf.vim.git fzf.vim"
     "https://github.com/iamcco/markdown-preview.nvim.git markdown-preview.nvim"
     "https://github.com/liuchengxu/vim-which-key.git vim-which-key"
 )

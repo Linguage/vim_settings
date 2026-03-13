@@ -11,6 +11,12 @@ if isdirectory(s:local_plugin_dir)
     let s:plugin_dir = s:local_plugin_dir
 endif
 
+if isdirectory('/opt/homebrew/opt/fzf')
+    set runtimepath+=/opt/homebrew/opt/fzf
+elseif isdirectory('/usr/local/opt/fzf')
+    set runtimepath+=/usr/local/opt/fzf
+endif
+
 " 将插件目录添加到runtimepath
 if isdirectory(s:plugin_dir)
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-sensible'
@@ -23,6 +29,7 @@ if isdirectory(s:plugin_dir)
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-fugitive'
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-polyglot'
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-devicons'
+    execute 'set runtimepath+=' . s:plugin_dir . '/fzf.vim'
     " Markdown preview plugin
     execute 'set runtimepath+=' . s:plugin_dir . '/markdown-preview.nvim'
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-which-key'

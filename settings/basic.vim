@@ -78,7 +78,8 @@ endif
 
 " 启用持久化撤销
 if has('persistent_undo')
-    let s:undo_dir = expand('~/.vim/undo//')
+    " Keep undo history outside the symlinked config repo.
+    let s:undo_dir = expand('~/.local/state/vim/undo//')
     set undofile
     let &undodir = s:undo_dir
     if !isdirectory(s:undo_dir)
@@ -91,6 +92,7 @@ set undoreload=10000
 set signcolumn=yes
 set complete=.,w,b,u,t
 set pumheight=20
+set hidden
 set path+=**
 set shortmess+=c
 
@@ -102,6 +104,10 @@ set wildignorecase
 
 if exists('+wildcharm')
     set wildcharm=<Tab>
+endif
+
+if exists('+confirm')
+    set confirm
 endif
 
 " 自动保存和读取
@@ -123,6 +129,9 @@ augroup vim_settings_basic
 
     " 自动切换到文件目录
     autocmd BufEnter * if bufname('') !~ '^\[A-Za-z0-9\]*://' | lcd %:p:h | endif
+
+    " Markdown 更适合按自然语言阅读，启用软换行
+    autocmd FileType markdown,mkd,pandoc setlocal wrap linebreak
 augroup END
 
 " 启用文件类型检测
