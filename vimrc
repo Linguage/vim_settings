@@ -3,6 +3,10 @@
 " ============================================================================
 " 注意：此文件已被模块化拆分，具体配置请查看 settings/ 目录下的相应文件
 
+" Leader 键必须在加载任何模块前定义，避免早期模块把映射绑定到默认的 "\"。
+let mapleader = " "
+let g:mapleader = " "
+
 " 获取当前 vimrc 文件所在目录
 let s:config_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 

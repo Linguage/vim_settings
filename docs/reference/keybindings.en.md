@@ -165,6 +165,7 @@ Common commands:
 | `<leader>hs`    | Open the Vim learning plan           |
 | `<leader>hg`    | Open the Vim plugins guide           |
 | `<leader>hm`    | Show the current mapping table       |
+| `<leader>t` / `<leader>th` | Open the theme picker      |
 | `<leader>en`    | Switch to the English input method after enabling the input-method helper |
 | `<leader>im`    | Trigger input-method switching manually after enabling the input-method helper |
 
