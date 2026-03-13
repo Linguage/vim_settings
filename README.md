@@ -2,9 +2,7 @@
 
 # Vim 配置管理器
 
-**v3.0 - 模块化重构版本**
-
-[English](README.en.md) | [简体中文](README.zh.md)
+**v3.3 - 模块化重构版本**
 
 </div>
 
@@ -37,11 +35,9 @@ chmod +x vim-manager scripts/bootstrap.sh scripts/install_dependencies.sh
 
 ## 📚 文档
 
-- [English Documentation](README.en.md) - 英文文档
-- [中文文档](README.zh.md) - 详细的中文说明
+- [详细文档](./docs/getting-started.md) - 完整的安装、配置和使用指南
 - [快捷键参考](./docs/reference/keybindings.zh.md) - 按键绑定和命令参考
-- [更新日志](./docs/worknotes/changelog.zh.md) - 版本历史和变更记录
-- [文档规划](./docs/plans/vim-manager-device-plan.md) - 结构和演进计划
+- [更新日志](./docs/changelogs.md) - 版本历史和变更记录
 
 ## 🗂️ 目录说明
 
@@ -73,6 +69,11 @@ chmod +x vim-manager scripts/bootstrap.sh scripts/install_dependencies.sh
 - `scripts/cleanup.sh`：清理项目根目录中的临时文件和空目录
 
 ## 📊 版本亮点
+
+### v3.3 (2026-03-13) - 功能完善
+- 🧹 **移除冗余**：清理不使用的插件和配置
+- 📝 **文档更新**：重构文档结构和内容组织
+- 🔧 **配置优化**：改进插件加载和依赖管理
 
 ### v3.0 (2025-06-16) - 模块化重构
 - 🎯 **代码减少 63%**：从 1075 行精简到 396 行

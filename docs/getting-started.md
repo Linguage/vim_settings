@@ -1,7 +1,5 @@
 # 便携式 Vim 配置
 
-[English](README.en.md) | [简体中文](README.zh.md)
-
 本仓库包含一个高度可定制的 Vim 配置，专为现代高效的工作流程设计。它配备了一个强大的管理脚本，可以一键安装并在多台设备上轻松维护。
 
 当前推荐的使用方式是：将家目录的 `.vim` 符号链接到本目录，并让家目录的 `.vimrc` 指向本目录中的 `vimrc`。这样可以把真实生效的 Vim 配置集中放在仓库中管理。
@@ -156,6 +154,7 @@ vim_manager_modules/
 | `vim-polyglot` | 语言支持 | 多种编程语言的语法高亮 |
 | `auto-pairs` | 自动配对 | 自动匹配括号、引号等 |
 | `vim-sensible` | 合理默认 | 提供合理的 Vim 默认设置 |
+| `fzf.vim` | 模糊搜索 | 基于 fzf 的文件搜索和模糊匹配 |
 | `csv.vim` | CSV 查看 | 改善 CSV 文件的列感知显示与处理 |
 | `markdown-preview.nvim` | Markdown 预览 | 在浏览器中预览 Markdown |
 | `vim-which-key` | 快捷键提示 | 显示 Leader 键可用分组与命令 |
@@ -178,33 +177,15 @@ vim_settings/
 ├── colors/             # 颜色主题
 ├── plugins/            # 插件目录（自动管理）
 └── docs/               # 文档
+    ├── reference/      # 参考文档
+    ├── worknotes/     # 工作笔记
+    └── ...
 ```
-
--   `./vim-manager install`
-    安装配置，链接文件，并从清单中克隆所有插件。
-
--   `./vim-manager update`
-    更新所有已安装的插件到最新版本。
-
--   `./vim-manager status`
-    检查符号链接状态，并列出所有托管和非托管的插件。
-
--   `./vim-manager clean`
-    移除 `plugins/` 目录中未在清单中列出的插件。删除前会显示确认提示。
-
--   `./vim-manager uninstall`
-    安全地移除由 `vim-manager install` 创建的符号链接。仓库目录和其中的插件文件不会被删除。
-
--   `./vim-manager help`
-    显示包含所有可用命令的帮助信息。
 
 ## 文档
 
-- [快捷键指南](./docs/reference/keybindings.zh.md) - 所有自定义快捷键和插件命令的参考
-- [更新日志](./docs/worknotes/changelog.zh.md) - 版本更新历史记录
-- [历史总结](./docs/worknotes/update-summary.md) - 早期重构与文档更新总结
-- [管理脚本计划](./docs/plans/vim-manager-device-plan.md) - `vim-manager` 的整理与演进计划
-- [遗留文档](./docs/legacy/vim-manager-docs.md) - 旧版脚本分析与历史说明
+- [快捷键指南](./reference/keybindings.zh.md) - 所有自定义快捷键和插件命令的参考
+- [更新日志](./worknotes/01_CHANGELOG_2025-06-16.md) - 版本更新历史记录
 
 ## 故障排除
 
@@ -212,8 +193,9 @@ vim_settings/
 
 1. 确保您已安装 Nerd Font 并在终端中启用
 2. 运行 `./vim-manager status` 检查配置状态
-3. 如果 `status` 显示 `all-the-icons` 或 `nvim-web-devicons` 这类 `Unmanaged` 项，说明它们是历史遗留目录，可通过 `./vim-manager clean` 清理
-4. 查看 `:checkhealth` 的输出以获取更多诊断信息
+3. 运行 `./vim-manager clean` 清理历史遗留的插件目录
+4. 运行 `./vim-manager update` 更新所有插件
+5. 查看 `:checkhealth` 的输出以获取更多诊断信息
 
 ## 贡献
 

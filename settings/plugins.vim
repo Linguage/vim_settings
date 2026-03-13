@@ -35,10 +35,7 @@ if isdirectory(s:plugin_dir)
     execute 'set runtimepath+=' . s:plugin_dir . '/markdown-preview.nvim'
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-which-key'
     
-    " Only load all-the-icons in MacVim
-    if has('gui_macvim')
-        execute 'set runtimepath+=' . s:plugin_dir . '/all-the-icons'
-    endif
+
     
     " 加载插件帮助文档
     silent! helptags ALL
