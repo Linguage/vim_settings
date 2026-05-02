@@ -10,7 +10,8 @@
 
 ### 后续（2026-05）
 
-- 用户文档改为**仅中文**；快捷键等并入 `docs/tutorials/`，changelog 与 `vim-manager` 专题稿归入 `docs/legacy/`（含 `legacy/internal/`）；详见 [changelog 摘要](../legacy/changelog.md)。
+- 用户文档改为**仅中文**；快捷键等在 `docs/tutorials/`；changelog 与专题稿在 `docs/legacy/`。
+- **2026-05**：已与 `origin/main` 合并，吸收远端 v3.3 的 Vim 与管理脚本（`deps`/`bootstrap`、`fzf`/`csv` 等）；文档路径仍服从 `Agents.md`，不保留 `docs/worknotes/`、根目录散落英文镜像。
 
 ### 备注
 
