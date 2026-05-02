@@ -12,12 +12,13 @@
 1. **Vim 运行时配置**：仓库根目录的 `vimrc` 作为主入口，`settings/` 下按Concern拆分模块（基础、插件、UI、快捷键、配色等）。
 2. **运维脚本 `vim-manager`**：Bash 入口脚本，按需 `source` `vim_manager_modules/` 内的配置、通用函数、核心业务与命令分发。
 
-典型工作流：`./vim-manager install` 部署或链接配置并拉取插件；日常通过 `vimrc` → `settings/*.vim` 调整行为。
+典型工作流：新环境可 `./scripts/bootstrap.sh` 或 `./vim-manager bootstrap`；仅更新插件用 `./vim-manager update`；自检 `./vim-manager status`。
 
 ## 2. 模块结构
 
-- **`vim-manager`**：`install` / `update` / `clean` / `status` / `uninstall` / `help`。
-- **`vim_manager_modules/`**：`config.sh`、`helpers.sh`、`core_logic.sh`、`commands.sh` — 路径、插件清单与命令实现（以源码为准）。
+- **`vim-manager`**：`deps` / `bootstrap` / `install` / `update` / `clean` / `status` / `uninstall` / `help`。
+- **`vim_manager_modules/`**：`config.sh`（`VERSION`、`PLUGINS`、`REQUIRED_TOOLS`）、`helpers.sh`、`core_logic.sh`、`commands.sh`。
+- **`scripts/`**：`bootstrap.sh`、`install_dependencies.sh`、`cleanup.sh` — 自动化安装入口与杂物清理。
 - **`settings/`**：`basic.vim`、`plugins.vim`、`plugin_configs.vim`、`ui.vim`、`mappings.vim`、`colorscheme.vim` 等。
 - **`colors/`**：配色 Vim 脚本。
 
@@ -37,6 +38,7 @@
 |------|------|
 | `vimrc`、`settings/`、`colors/` | Vim 配置主体 |
 | `vim-manager`、`vim_manager_modules/` | CLI 与管理实现 |
+| `scripts/` | 依赖/bootstrap/cleanup |
 | `docs/INDEX.md` | 文档总索引（**`docs/` 根仅此一篇索引文**） |
 | `docs/tutorials/` | 上手教程、快捷键一览（如 `tutorial.md`、`keybindings.md`） |
 | `docs/legacy/` | 归档：**`changelog.md`**（变更日志）；**`internal/`** 下脚本分析稿、重构计划等非主线历史材料 |

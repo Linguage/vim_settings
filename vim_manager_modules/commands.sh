@@ -13,13 +13,20 @@ show_help() {
     echo "Usage: $0 <command>"
     echo ""
     echo "Commands:"
-    echo "  install      Install the Vim configuration and all plugins."
-    echo "  update       Update all plugins to their latest versions."
+    echo "  deps         Install external dependencies such as rg, fzf, and node."
+    echo "  install      Install the Vim configuration, managed plugins, and plugin post-steps."
+    echo "  bootstrap    Install dependencies, then install the configuration and plugins."
+    echo "  update       Update all plugins to their latest versions and rerun post-steps."
     echo "  clean        Remove any plugins not listed in the manifest."
-    echo "  status       Check the status of the configuration and plugins."
-    echo "  uninstall    Remove the Vim configuration and all installed components."
+    echo "  status       Check dependencies, symlinks, managed plugins, and unmanaged plugins."
+    echo "  uninstall    Remove symlinks created by install without deleting the repo."
     echo "  help         Show this help message."
     echo ""
+}
+
+do_deps() {
+    header "Installing External Dependencies"
+    bash "$SCRIPT_DIR/scripts/install_dependencies.sh"
 }
 
 do_install() {
@@ -31,7 +38,14 @@ do_install() {
     
     link_config
     install_plugins
+    install_plugin_post_steps
     success "Installation complete!"
+}
+
+do_bootstrap() {
+    header "Starting Full Bootstrap"
+    do_deps
+    do_install
 }
 
 do_update() {
@@ -54,6 +68,7 @@ do_update() {
             warning "Plugin '$dir_name' not found. Run 'install' to install it."
         fi
     done
+    install_plugin_post_steps
     success "All plugins have been processed."
 }
 
@@ -108,18 +123,53 @@ do_clean() {
 do_status() {
     header "Checking Configuration Status"
 
+    # --- Check External Tools ---
+    info "1. Checking External Tools..."
+    for tool in "${REQUIRED_TOOLS[@]}"; do
+        if command_exists "$tool"; then
+            success "Installed: $tool"
+        else
+            warning "Missing:   $tool"
+        fi
+    done
+
+    if command_exists yarn || command_exists npm; then
+        if command_exists yarn; then
+            success "Installed: yarn"
+        fi
+        if command_exists npm; then
+            success "Installed: npm"
+        fi
+    else
+        warning "Missing:   npm or yarn (needed for markdown-preview.nvim)"
+    fi
+    echo ""
+
     # --- Check Symlinks ---
-    info "1. Checking Symlinks..."
+    info "2. Checking Symlinks..."
     local VIM_DIR="$HOME/.vim"
     local VIMRC_FILE="$HOME/.vimrc"
 
-    if [ -L "$VIM_DIR" ] && [ "$(readlink "$VIM_DIR")" == "$SCRIPT_DIR" ]; then
+    local expected_vim_dir
+    expected_vim_dir="$(resolve_path "$SCRIPT_DIR")"
+
+    local actual_vim_dir=""
+    if [ -L "$VIM_DIR" ]; then
+        actual_vim_dir="$(resolve_path "$VIM_DIR")"
+    fi
+
+    if [ -L "$VIM_DIR" ] && [ "$actual_vim_dir" == "$expected_vim_dir" ]; then
         success "~/.vim is correctly linked."
     else
         error "~/.vim is not linked correctly. Run 'install'."
     fi
 
-    if [ -L "$VIMRC_FILE" ] && [ "$(readlink "$VIMRC_FILE")" == "$VIM_DIR/vimrc" ]; then
+    local actual_vimrc_target=""
+    if [ -L "$VIMRC_FILE" ]; then
+        actual_vimrc_target="$(resolve_path "$VIMRC_FILE")"
+    fi
+
+    if [ -L "$VIMRC_FILE" ] && [ "$actual_vimrc_target" == "$expected_vim_dir/vimrc" ]; then
         success "~/.vimrc is correctly linked."
     else
         error "~/.vimrc is not linked correctly. Run 'install'."
@@ -127,7 +177,7 @@ do_status() {
     echo ""
 
     # --- Check Managed Plugins ---
-    info "2. Checking Managed Plugins..."
+    info "3. Checking Managed Plugins..."
     for plugin_info in "${PLUGINS[@]}"; do
         read -r repo_url dir_name <<< "$plugin_info"
         local plugin_path="$PLUGINS_DIR/$dir_name"
@@ -142,7 +192,7 @@ do_status() {
     echo ""
 
     # --- Check for Unmanaged Plugins ---
-    info "3. Checking for Unmanaged Plugins..."
+    info "4. Checking for Unmanaged Plugins..."
     local found_unmanaged=false
     for dir in "$PLUGINS_DIR"/*/; do
         if [ -d "$dir" ]; then
@@ -170,6 +220,32 @@ do_status() {
 
 do_uninstall() {
     header "Uninstalling Vim Configuration"
-    info "This will remove symlinks and the entire plugins directory."
+    info "This will remove symlinks created by vim-manager."
     warning "Your actual configuration in $SCRIPT_DIR will NOT be deleted."
+
+    local VIM_DIR="$HOME/.vim"
+    local VIMRC_FILE="$HOME/.vimrc"
+    local GVIMRC_FILE="$HOME/.gvimrc"
+    local expected_vim_dir
+    expected_vim_dir="$(resolve_path "$SCRIPT_DIR")"
+
+    if [ -L "$GVIMRC_FILE" ] && [ "$(resolve_path "$GVIMRC_FILE")" == "$expected_vim_dir/vimrc" ]; then
+        info "Removing symlink $GVIMRC_FILE"
+        rm "$GVIMRC_FILE"
+        success "Removed ~/.gvimrc symlink."
+    fi
+
+    if [ -L "$VIMRC_FILE" ] && [ "$(resolve_path "$VIMRC_FILE")" == "$expected_vim_dir/vimrc" ]; then
+        info "Removing symlink $VIMRC_FILE"
+        rm "$VIMRC_FILE"
+        success "Removed ~/.vimrc symlink."
+    fi
+
+    if [ -L "$VIM_DIR" ] && [ "$(resolve_path "$VIM_DIR")" == "$expected_vim_dir" ]; then
+        info "Removing symlink $VIM_DIR"
+        rm "$VIM_DIR"
+        success "Removed ~/.vim symlink."
+    fi
+
+    success "Uninstall complete. Repository files were left untouched."
 }

@@ -8,12 +8,22 @@
 - **Bash**：运行 `vim-manager`（macOS / Linux 一般已有）。
 - **Vim**：建议较新版本。
 - **Nerd Font**（推荐）：状态栏与文件树图标，详见根目录 `README.md`。
+- **`rg`、`fzf`、`node`**：由 `vim-manager status` / `deps` 检查；未安装可先执行 `./vim-manager deps` 或使用 `./scripts/bootstrap.sh`。
 
 ## 2. 安装配置
+
+推荐（依赖 + 配置 + 插件）：
 
 ```bash
 git clone <你的仓库地址> ~/vim_settings
 cd ~/vim_settings
+chmod +x vim-manager scripts/bootstrap.sh scripts/install_dependencies.sh
+./scripts/bootstrap.sh
+```
+
+若依赖已齐备，仅需链接与克隆插件：
+
+```bash
 chmod +x vim-manager
 ./vim-manager install
 ```
@@ -34,16 +44,19 @@ vim
 
 ## 4. 文件树（NERDTree）
 
-- `<leader>n`：打开/关闭 NERDTree
-- `<leader>f`：在树中定位当前文件
+- `<C-y>` 或 `<leader>n`：切换 NERDTree
+- `<leader>nf`：在树中定位当前文件
 
 ## 5. 日常维护命令
 
 | 命令 | 用途 |
 |------|------|
-| `./vim-manager update` | 更新已安装插件 |
+| `./vim-manager deps` | 安装/检查外部依赖（`vim`、`rg`、`fzf`、`node` 等） |
+| `./vim-manager bootstrap` | 先 deps 再 install |
+| `./vim-manager update` | 更新插件并 rerun 插件后置步骤 |
 | `./vim-manager status` | 查看链接与插件状态 |
 | `./vim-manager clean` | 清理未被清单管理的插件目录（有风险，确认提示） |
+| `./vim-manager uninstall` | 移除符号链接 |
 | `./vim-manager help` | 帮助 |
 
 ## 6. 接下来读什么

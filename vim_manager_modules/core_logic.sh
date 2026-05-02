@@ -68,3 +68,43 @@ install_plugins() {
         fi
     done
 }
+
+install_plugin_post_steps() {
+    header "Running Plugin Post-Install Steps"
+
+    local markdown_app="$PLUGINS_DIR/markdown-preview.nvim/app"
+    if [ -d "$markdown_app" ]; then
+        if command_exists yarn; then
+            info "Installing markdown-preview.nvim app dependencies with yarn..."
+            if (cd "$markdown_app" && yarn install --frozen-lockfile >/dev/null 2>&1); then
+                success "markdown-preview.nvim app dependencies installed."
+            elif (cd "$markdown_app" && yarn install >/dev/null 2>&1); then
+                success "markdown-preview.nvim app dependencies installed."
+            else
+                warning "Failed to install markdown-preview.nvim app dependencies with yarn."
+            fi
+        elif command_exists npm; then
+            info "Installing markdown-preview.nvim app dependencies with npm..."
+            if (cd "$markdown_app" && npm install >/dev/null 2>&1); then
+                success "markdown-preview.nvim app dependencies installed."
+            else
+                warning "Failed to install markdown-preview.nvim app dependencies with npm."
+            fi
+        else
+            warning "markdown-preview.nvim needs npm or yarn for browser preview support."
+        fi
+    else
+        info "markdown-preview.nvim is not installed yet. Skipping app dependency setup."
+    fi
+
+    if command_exists vim; then
+        info "Refreshing Vim helptags..."
+        if vim -Nu "$SCRIPT_DIR/vimrc" -i NONE -n -es +'silent! helptags ALL' +q >/dev/null 2>&1; then
+            success "Helptags refreshed."
+        else
+            warning "Failed to refresh helptags automatically."
+        fi
+    else
+        warning "Vim is not available, so helptags were not refreshed."
+    fi
+}

@@ -65,9 +65,9 @@ endfunction
 
 " 绑定快捷键到主题选择函数
 " 按 <Leader>t 来打开主题选择菜单
-noremap <Leader>t :call SelectColorScheme()<CR>
+nnoremap <silent> <Leader>t :call SelectColorScheme()<CR>
 
 " 可选：也可以使用 <Leader>th (theme) 作为快捷键
-noremap <Leader>th :call SelectColorScheme()<CR>
+nnoremap <silent> <Leader>th :call SelectColorScheme()<CR>
 
 " 主题信息将通过 airline 状态栏显示，无需单独设置 statusline

@@ -5,8 +5,8 @@
 # ============================================================================
 
 # --- Configuration ---
-VERSION="3.2"
-UPDATED="2026-05-02"
+VERSION="3.3"
+UPDATED="2026-03-13"
 
 # Directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
@@ -19,16 +19,25 @@ PLUGINS=(
     "https://github.com/vim-airline/vim-airline-themes.git vim-airline-themes"
     "https://github.com/preservim/nerdtree.git nerdtree"
     "https://github.com/ryanoasis/vim-devicons.git vim-devicons"
-    "https://github.com/ryanoasis/vim-devicons.git all-the-icons"
-    "https://github.com/nvim-tree/nvim-web-devicons.git nvim-web-devicons"
     "https://github.com/tpope/vim-fugitive.git vim-fugitive"
     "https://github.com/tpope/vim-surround.git vim-surround"
     "https://github.com/tpope/vim-commentary.git vim-commentary"
     "https://github.com/sheerun/vim-polyglot.git vim-polyglot"
     "https://github.com/jiangmiao/auto-pairs.git auto-pairs"
     "https://github.com/tpope/vim-sensible.git vim-sensible"
+    "https://github.com/junegunn/fzf.vim.git fzf.vim"
+    "https://github.com/chrisbra/csv.vim.git csv.vim"
     "https://github.com/iamcco/markdown-preview.nvim.git markdown-preview.nvim"
     "https://github.com/liuchengxu/vim-which-key.git vim-which-key"
+)
+
+# --- External Tool Checks ---
+REQUIRED_TOOLS=(
+    "git"
+    "vim"
+    "rg"
+    "fzf"
+    "node"
 )
 
 # --- Colors and Formatting ---

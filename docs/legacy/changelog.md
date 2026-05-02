@@ -1,5 +1,13 @@
 # 更新日志
 
+## v3.3 - 2026-03-13 / 后续合并 - 吸收远端 vim 配置与 manager 增强
+
+- **`vim-manager`**：新增 `deps`、`bootstrap`；`status` 检查外部工具；`update`/`install` 后执行插件后置步骤（详见 `vim_manager_modules/commands.sh` / `core_logic.sh`）。
+- **插件清单**：增加 `fzf.vim`、`csv.vim`；移除未在清单中维护的冗余 devicons 变体（以 `config.sh` 为准）。
+- **`settings/`**：基础编辑体验（`rg`、quickfix、持久化撤销目录 `~/.local/state/vim/undo/`）、FZF 项目文件、CSV、Markdown 等与远端提交对齐。
+- **`scripts/`**：`bootstrap.sh`、`install_dependencies.sh` 作为自动化入口；`cleanup.sh` 用于项目根目录常见临时文件清理。
+- **文档**：仍按本仓库 **`docs/INDEX.md`** 与 **仅中文** 约定组织；不保留远端 `docs/worknotes/`、`docs/reference/*` 镜像路径；快捷键文档位于 `docs/tutorials/keybindings.md`。
+
 ## v3.2 - 2026-05-02 - 移除 Copilot、文档仅中文与目录整理
 
 - 移除所有 GitHub Copilot 相关的用户文档、`vim-manager` 中无效的 `copilot` 子命令占位，以及配置中的 Copilot 注释占位段。
@@ -24,7 +32,7 @@
 
 ### 核心命令保留
 
-- `install` / `update` / `clean` / `status` / `uninstall` / `help`
+- `install` / `deps` / `bootstrap` / `update` / `clean` / `status` / `uninstall` / `help`
 
 ### 升级说明
 

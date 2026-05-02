@@ -16,8 +16,14 @@ source "$SCRIPT_DIR/vim_manager_modules/commands.sh"
 # --- Main Execution Logic ---
 main() {
     case "${1:-help}" in
+        deps)
+            do_deps
+            ;;
         install)
             do_install
+            ;;
+        bootstrap)
+            do_bootstrap
             ;;
         update)
             do_update

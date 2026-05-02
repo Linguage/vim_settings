@@ -14,6 +14,7 @@
 
 - `vimrc` + `settings/` + `colors/`：Vim 配置主体
 - `vim-manager`、`vim_manager_modules/`：安装、更新、卸载等运维命令
+- `scripts/`：`install_dependencies.sh`（依赖）、`bootstrap.sh`（deps+install）、`cleanup.sh`（清理临时文件）；与 `vim-manager deps` / `bootstrap` 协同
 - `docs/specs/`：治理文档（BLUEPRINT / ARCHITECTURE / ROADMAP）
 - `docs/jobs`、`docs/legacy`、`docs/reports`、`docs/work-notes`：任务与记录体系
 - `docs/INDEX.md`：读者向文档总索引（**`docs/` 根目录只保留此文与固定子目录，不再放其它散落 `.md`**）
