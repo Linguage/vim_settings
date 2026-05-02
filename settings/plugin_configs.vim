@@ -4,6 +4,10 @@
 
 let s:plugin_root = fnamemodify(resolve(expand('<sfile>:p')), ':h') . '/../plugins'
 
+function! s:HasPlugin(plugin_name) abort
+    return isdirectory(s:plugin_root . '/' . a:plugin_name)
+endfunction
+
 " ----------------------------------------------------------------------------
 " Vim-Airline 基础配置
 " ----------------------------------------------------------------------------
@@ -84,52 +88,60 @@ let g:webdevicons_enable_airline_tabline = 1
 " ----------------------------------------------------------------------------
 
 " NERDTree 基本设置
-let NERDTreeShowHidden=1
-let NERDTreeIgnore=['^\.git$', '^\.hg$', '^\.svn$', '^\.bzr$', '\.pyc$', '\~$', '\.swp$', '\.swo$', '\.DS_Store$']
-let NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
-let NERDTreeShowBookmarks=1
-let NERDTreeWinSize=25
-let NERDTreeWinPos="left"
-let NERDTreeHighlightCursorline=1
-let NERDTreeAutoDeleteBuffer=1
-let NERDTreeMinimalUI=1
-let NERDTreeDirArrows=1
+if s:HasPlugin('nerdtree')
+    let NERDTreeShowHidden=1
+    let NERDTreeIgnore=['^\.git$', '^\.hg$', '^\.svn$', '^\.bzr$', '\.pyc$', '\~$', '\.swp$', '\.swo$', '\.DS_Store$']
+    let NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
+    let NERDTreeShowBookmarks=1
+    let NERDTreeWinSize=25
+    let NERDTreeWinPos="left"
+    let NERDTreeHighlightCursorline=1
+    let NERDTreeAutoDeleteBuffer=1
+    let NERDTreeMinimalUI=1
+    let NERDTreeDirArrows=1
 
-" 默认不自动打开NERDTree
-" 注释掉自动打开NERDTree的行
-" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+    " 默认不自动打开NERDTree
+    " 注释掉自动打开NERDTree的行
+    " autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
-augroup vim_settings_nerdtree
-    autocmd!
-    " 关闭vim时自动关闭NERDTree
-    autocmd BufEnter * if (winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree()) | q | endif
-augroup END
+    augroup vim_settings_nerdtree
+        autocmd!
+        " 关闭vim时自动关闭NERDTree
+        autocmd BufEnter * if (winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree()) | q | endif
+    augroup END
 
-" NERDTree 快捷键 - 使用<leader>n切换NERDTree
-nnoremap <silent> <leader>n :NERDTreeToggle<CR>
-nnoremap <silent> <leader>nf :NERDTreeFind<CR>
-nnoremap <silent> <leader>ef :NERDTreeFind<CR>
+    " NERDTree 快捷键 - 使用<leader>n切换NERDTree
+    nnoremap <silent> <leader>n :NERDTreeToggle<CR>
+    nnoremap <silent> <leader>nf :NERDTreeFind<CR>
+    nnoremap <silent> <leader>ef :NERDTreeFind<CR>
 
-" 在新标签页中打开文件
-let NERDTreeMapOpenInTab='<ENTER>'
+    " 在新标签页中打开文件
+    let NERDTreeMapOpenInTab='<ENTER>'
+endif
 
 " ----------------------------------------------------------------------------
 " Git 标记、撤销树与通用对齐
 " ----------------------------------------------------------------------------
 
-let g:signify_sign_add = '+'
-let g:signify_sign_delete = '_'
-let g:signify_sign_delete_first_line = '^'
-let g:signify_sign_change = '~'
-nnoremap <silent> <leader>gS :SignifyToggle<CR>
-nnoremap <silent> ]h :SignifyHunkNext<CR>
-nnoremap <silent> [h :SignifyHunkPrev<CR>
+if s:HasPlugin('vim-signify')
+    let g:signify_sign_add = '+'
+    let g:signify_sign_delete = '_'
+    let g:signify_sign_delete_first_line = '^'
+    let g:signify_sign_change = '~'
+    nnoremap <silent> <leader>gS :SignifyToggle<CR>
+    nnoremap <silent> ]h :SignifyHunkNext<CR>
+    nnoremap <silent> [h :SignifyHunkPrev<CR>
+endif
 
-let g:undotree_SetFocusWhenToggle = 1
-nnoremap <silent> <leader>u :UndotreeToggle<CR>
+if s:HasPlugin('undotree')
+    let g:undotree_SetFocusWhenToggle = 1
+    nnoremap <silent> <leader>u :UndotreeToggle<CR>
+endif
 
-xmap ga <Plug>(EasyAlign)
-nmap ga <Plug>(EasyAlign)
+if s:HasPlugin('vim-easy-align')
+    xmap ga <Plug>(EasyAlign)
+    nmap ga <Plug>(EasyAlign)
+endif
 
 " ----------------------------------------------------------------------------
 " FZF 文件选择器配置
@@ -199,7 +211,11 @@ if isdirectory(s:plugin_root . '/fzf.vim')
     function! s:ProjectExplorer() abort
         let l:root = s:ProjectRoot()
         execute 'cd ' . fnameescape(l:root)
-        execute 'NERDTree ' . fnameescape(l:root)
+        if s:HasPlugin('nerdtree')
+            execute 'NERDTree ' . fnameescape(l:root)
+        else
+            execute 'edit ' . fnameescape(l:root)
+        endif
     endfunction
 
     command! ProjectFiles call <SID>ProjectFiles()
@@ -210,7 +226,11 @@ else
     endfunction
 
     command! ProjectFiles call <SID>ProjectFilesFallback()
-    command! ProjectExplorer NERDTree
+    function! s:ProjectExplorerFallback() abort
+        execute 'edit ' . fnameescape(getcwd())
+    endfunction
+
+    command! ProjectExplorer call <SID>ProjectExplorerFallback()
 endif
 
 " ----------------------------------------------------------------------------
@@ -234,22 +254,24 @@ augroup END
 " ----------------------------------------------------------------------------
 
 " 设置 Markdown Preview 插件路径（避免重复加载）
-let g:mkdp_path_to_plugin = s:plugin_root . '/markdown-preview.nvim/app'
+if s:HasPlugin('markdown-preview.nvim')
+    let g:mkdp_path_to_plugin = s:plugin_root . '/markdown-preview.nvim/app'
 
-" 默认使用浏览器打开（Chrome 或系统默认）
-function! MkdpOpenBrowser(url)
-    execute 'silent !open ' . shellescape(a:url)
-endfunction
-let g:mkdp_browserfunc = 'MkdpOpenBrowser'
+    " 默认使用浏览器打开（Chrome 或系统默认）
+    function! MkdpOpenBrowser(url)
+        execute 'silent !open ' . shellescape(a:url)
+    endfunction
+    let g:mkdp_browserfunc = 'MkdpOpenBrowser'
 
-" 仅在 markdown、pandoc 等文件类型自动加载
-let g:mkdp_filetypes = ['markdown', 'mkd', 'md', 'pandoc']
+    " 仅在 markdown、pandoc 等文件类型自动加载
+    let g:mkdp_filetypes = ['markdown', 'mkd', 'md', 'pandoc']
 
-" 启动/关闭预览的快捷键
-nnoremap <silent> <leader>mp :MarkdownPreviewToggle<CR>
-nnoremap <silent> <leader>mo :MarkdownPreview<CR>
-nnoremap <silent> <leader>md :MarkdownPreview<CR>
-nnoremap <silent> <leader>mc :MarkdownPreviewStop<CR>
+    " 启动/关闭预览的快捷键
+    nnoremap <silent> <leader>mp :MarkdownPreviewToggle<CR>
+    nnoremap <silent> <leader>mo :MarkdownPreview<CR>
+    nnoremap <silent> <leader>md :MarkdownPreview<CR>
+    nnoremap <silent> <leader>mc :MarkdownPreviewStop<CR>
+endif
 
 " ----------------------------------------------------------------------------
 " which-key 配置（按下 <leader> 弹出菜单）
@@ -259,9 +281,6 @@ nnoremap <silent> <leader>mc :MarkdownPreviewStop<CR>
 set timeout
 set timeoutlen=400
 
-" 在按下 <leader><leader> 时弹出 which-key，避免和 leader 组合键冲突
-nnoremap <silent> <leader><leader> :WhichKey '<Space>'<CR>
-
 " 可选：为分组起名，展示更友好
 let g:which_key_map = {}
 let g:which_key_map.f = { 'name': '+file' }
@@ -269,14 +288,25 @@ let g:which_key_map.g = { 'name': '+git' }
 let g:which_key_map.b = { 'name': '+buffer' }
 let g:which_key_map.c = { 'name': '+quickfix' }
 let g:which_key_map.h = { 'name': '+help' }
-let g:which_key_map.m = { 'name': '+markdown' }
-let g:which_key_map.n = { 'name': '+nerdtree' }
 let g:which_key_map.p = { 'name': '+plugin' }
 let g:which_key_map.w = { 'name': '+window' }
 let g:which_key_map.t = { 'name': '+theme' }
 
-augroup vim_settings_which_key
-    autocmd!
-    " 启动 which-key（确保加载）
-    autocmd VimEnter * call which_key#register('<Space>', 'g:which_key_map')
-augroup END
+if s:HasPlugin('markdown-preview.nvim')
+    let g:which_key_map.m = { 'name': '+markdown' }
+endif
+
+if s:HasPlugin('nerdtree')
+    let g:which_key_map.n = { 'name': '+nerdtree' }
+endif
+
+if s:HasPlugin('vim-which-key')
+    " 在按下 <leader><leader> 时弹出 which-key，避免和 leader 组合键冲突
+    nnoremap <silent> <leader><leader> :WhichKey '<Space>'<CR>
+
+    augroup vim_settings_which_key
+        autocmd!
+        " 启动 which-key（确保加载）
+        autocmd VimEnter * call which_key#register('<Space>', 'g:which_key_map')
+    augroup END
+endif

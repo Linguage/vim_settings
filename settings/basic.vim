@@ -102,7 +102,7 @@ if exists('+viewdir')
     let &viewdir = s:state_dirs.view
 endif
 
-set viewoptions=folds,cursor,curdir
+set viewoptions=folds,cursor
 
 " 启用持久化撤销
 if has('persistent_undo')
@@ -183,7 +183,7 @@ augroup vim_settings_basic
 
     " 保存和恢复窗口视图信息（折叠、光标等）。
     autocmd BufWinLeave * if <SID>IsNormalFileBuffer() | silent! mkview | endif
-    autocmd BufWinEnter * if <SID>IsNormalFileBuffer() | silent! loadview | endif
+    autocmd BufWinEnter * if <SID>IsNormalFileBuffer() && !exists('g:vim_settings_no_autochdir') | silent! loadview | endif
 
     " Markdown 更适合按自然语言阅读，启用软换行
     autocmd FileType markdown,mkd,pandoc setlocal wrap linebreak

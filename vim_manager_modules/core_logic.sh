@@ -51,6 +51,7 @@ link_config() {
 
 install_plugins() {
     local active_profile="${1:-$DEFAULT_PLUGIN_PROFILE}"
+    local failed=0
 
     header "Installing Plugins"
     info "Using plugin profile: $active_profile"
@@ -73,9 +74,12 @@ install_plugins() {
                 success "Plugin '$dir_name' installed successfully."
             else
                 error "Failed to install plugin '$dir_name'."
+                failed=1
             fi
         fi
     done
+
+    return "$failed"
 }
 
 install_plugin_post_steps() {

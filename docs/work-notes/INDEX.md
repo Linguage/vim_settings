@@ -8,4 +8,5 @@
 
 ## 按日期 / 主题浏览
 
+- [01_ORIGIN_MERGE_AND_DOCS_GOVERNANCE_SUMMARY_2026-05-02.md](01_ORIGIN_MERGE_AND_DOCS_GOVERNANCE_SUMMARY_2026-05-02.md) — 上游合并、`vim-manager`/v3.3 对齐、文档治理与孤儿插件清理（会话系列小结，2026-05-02）
 - [update-summary.md](update-summary.md) — 约 2025-06-16 的文档批量更新纪要（含后续路径变更说明）

@@ -10,7 +10,7 @@ show_help() {
     header "Vim Manager v$VERSION"
     echo "A portable manager for your Vim configuration."
     echo ""
-    echo "Usage: $0 <command> [--profile minimal|default|full]"
+    echo "Usage: $0 <command> [options]"
     echo ""
     echo "Commands:"
     echo "  deps         Install external dependencies such as rg, fzf, and node."
@@ -23,10 +23,23 @@ show_help() {
     echo "  help         Show this help message."
     echo ""
     echo "Plugin profiles:"
+    echo "  Supported by install, bootstrap, update, status, and clean."
     echo "  minimal      Basic editing and search plugins only."
     echo "  default      Complete managed plugin set. This is the default."
     echo "  full         Same as default for now; reserved for future optional plugins."
     echo ""
+}
+
+parse_no_args() {
+    local command_name="$1"
+    shift
+
+    if [ $# -gt 0 ]; then
+        error "Command '$command_name' does not accept options: $*"
+        return 1
+    fi
+
+    return 0
 }
 
 parse_profile_args() {
@@ -63,6 +76,8 @@ parse_profile_args() {
 }
 
 do_deps() {
+    parse_no_args deps "$@" || exit 1
+
     header "Installing External Dependencies"
     bash "$SCRIPT_DIR/scripts/install_dependencies.sh"
 }
@@ -77,7 +92,10 @@ do_install() {
     fi
     
     link_config
-    install_plugins "$ACTIVE_PLUGIN_PROFILE"
+    if ! install_plugins "$ACTIVE_PLUGIN_PROFILE"; then
+        error "One or more plugins failed to install."
+        exit 1
+    fi
     install_plugin_post_steps "$ACTIVE_PLUGIN_PROFILE"
     success "Installation complete!"
 }
@@ -86,7 +104,7 @@ do_bootstrap() {
     parse_profile_args "$@" || exit 1
 
     header "Starting Full Bootstrap"
-    do_deps
+    do_deps || exit 1
     do_install --profile "$ACTIVE_PLUGIN_PROFILE"
 }
 
@@ -100,6 +118,8 @@ do_update() {
         exit 1
     fi
 
+    local failed=0
+
     for plugin_info in "${PLUGINS[@]}"; do
         read -r repo_url dir_name <<< "$plugin_info"
         local plugin_path="$PLUGINS_DIR/$dir_name"
@@ -110,14 +130,23 @@ do_update() {
 
         if [ -d "$plugin_path/.git" ]; then
             info "Updating '$dir_name'..."
-            # Store current directory, cd, pull, and cd back
-            (cd "$plugin_path" && git pull --rebase --autostash >/dev/null 2>&1)
-            success "'$dir_name' updated."
+            if (cd "$plugin_path" && git pull --rebase --autostash >/dev/null 2>&1); then
+                success "'$dir_name' updated."
+            else
+                error "Failed to update '$dir_name'."
+                failed=1
+            fi
         else
             warning "Plugin '$dir_name' not found. Run 'install' to install it."
+            failed=1
         fi
     done
+
     install_plugin_post_steps "$ACTIVE_PLUGIN_PROFILE"
+    if [ "$failed" -ne 0 ]; then
+        error "One or more plugins failed to update."
+        exit 1
+    fi
     success "All plugins have been processed."
 }
 
@@ -278,6 +307,8 @@ do_status() {
 }
 
 do_uninstall() {
+    parse_no_args uninstall "$@" || exit 1
+
     header "Uninstalling Vim Configuration"
     info "This will remove symlinks created by vim-manager."
     warning "Your actual configuration in $SCRIPT_DIR will NOT be deleted."

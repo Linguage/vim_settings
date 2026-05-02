@@ -48,17 +48,19 @@ augroup vim_settings_core
 augroup END
 
 " Fugitive 配置（Git集成）
-nnoremap <leader>gs :Gstatus<CR>
-nnoremap <leader>gd :Gdiff<CR>
-nnoremap <leader>gD :Gdiffsplit<CR>
-nnoremap <leader>gc :Gcommit<CR>
-nnoremap <leader>gb :Gblame<CR>
-nnoremap <leader>gl :Glog<CR>
-nnoremap <leader>gi :Git add -p %<CR>
-nnoremap <leader>gp :Git push<CR>
-nnoremap <leader>gr :Gread<CR>
-nnoremap <leader>gw :Gwrite<CR>
-nnoremap <leader>ge :Gedit<CR>
+if isdirectory(s:config_dir . '/plugins/vim-fugitive')
+    nnoremap <leader>gs :Gstatus<CR>
+    nnoremap <leader>gd :Gdiff<CR>
+    nnoremap <leader>gD :Gdiffsplit<CR>
+    nnoremap <leader>gc :Gcommit<CR>
+    nnoremap <leader>gb :Gblame<CR>
+    nnoremap <leader>gl :Glog<CR>
+    nnoremap <leader>gi :Git add -p %<CR>
+    nnoremap <leader>gp :Git push<CR>
+    nnoremap <leader>gr :Gread<CR>
+    nnoremap <leader>gw :Gwrite<CR>
+    nnoremap <leader>ge :Gedit<CR>
+endif
 
 " Surround 插件无需额外配置，使用默认快捷键：
 " cs"'  : 将双引号改为单引号

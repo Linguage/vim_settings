@@ -2,6 +2,12 @@
 " 快捷键映射
 " ============================================================================
 
+let s:plugin_root = fnamemodify(resolve(expand('<sfile>:p')), ':h') . '/../plugins'
+
+function! s:HasPlugin(plugin_name) abort
+    return isdirectory(s:plugin_root . '/' . a:plugin_name)
+endfunction
+
 " 快速保存
 nnoremap <leader>w :w!<cr>
 
@@ -133,9 +139,11 @@ nnoremap <leader>fg :Rg<Space>
 nnoremap <silent> <leader>gC /\v^[<\|=>]{7}( .*\|$)<CR>
 
 " 文件树工作流
-nnoremap <silent> <C-y> :NERDTreeToggle<CR>
-nnoremap <silent> <leader>ee :NERDTreeToggle<CR>
-nnoremap <silent> <leader>cd :cd %:h<CR>:NERDTreeCWD<CR>
+if s:HasPlugin('nerdtree')
+    nnoremap <silent> <C-y> :NERDTreeToggle<CR>
+    nnoremap <silent> <leader>ee :NERDTreeToggle<CR>
+    nnoremap <silent> <leader>cd :cd %:h<CR>:NERDTreeCWD<CR>
+endif
 
 " ============================================================================
 " Vim学习专用快捷键
