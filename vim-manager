@@ -28,9 +28,6 @@ main() {
         status)
             do_status
             ;;
-        copilot)
-            do_copilot
-            ;;
         uninstall)
             do_uninstall
             ;;

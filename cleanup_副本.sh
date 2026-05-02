@@ -77,12 +77,7 @@ echo "开始清理临时文件..."
 # 临时文件列表
 TEMP_FILES=(
     # 诊断和测试文件
-    "$SCRIPT_DIR/copilot_diagnostic.vim"
     "$SCRIPT_DIR/test_vim_modes.vim"
-    "$SCRIPT_DIR/test_copilot_integration.sh"
-    
-    # 临时报告
-    "$SCRIPT_DIR/COPILOT_INTEGRATION_REPORT.md"
     
     # 潜在的备份文件
     "$SCRIPT_DIR/*.bak"

@@ -5,8 +5,8 @@
 # ============================================================================
 
 # --- Configuration ---
-VERSION="3.1"
-UPDATED="2025-06-17"
+VERSION="3.2"
+UPDATED="2026-05-02"
 
 # Directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
