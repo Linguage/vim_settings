@@ -2,7 +2,7 @@
 
 项目当前版本：**v3.3**（以 [`vim_manager_modules/config.sh`](vim_manager_modules/config.sh) 中 `VERSION` 为准）。
 
-本仓库包含可在终端下长期使用的 Vim 配置，附带 **`vim-manager`** 管理脚本：`install` / `deps` / `bootstrap` / `update` / `status` / `clean` / `uninstall` / `help`。完整文档入口见 **`[docs/INDEX.md](docs/INDEX.md)`**（`docs/` 根目录仅存此索引与各子目录）。
+本仓库包含可在终端下长期使用的 Vim 配置，附带 **`vim-manager`** 管理脚本：`install` / `deps` / `bootstrap` / `update` / `status` / `clean` / `uninstall` / `help`，并支持 `--profile minimal|default|full` 插件 profile。完整文档入口见 **`[docs/INDEX.md](docs/INDEX.md)`**（`docs/` 根目录仅存此索引与各子目录）。
 
 ## 主要特性
 
@@ -10,6 +10,7 @@
 - **现代化界面**：`vim-airline`、图标（需 **Nerd Font**）。
 - **浏览与检索**：NERDTree、**fzf.vim** 项目文件选择（`<C-p>` / `:ProjectFiles`）、ripgrep 与 quickfix。
 - **编辑与语言**：`vim-surround`、`vim-commentary`、`auto-pairs`、`vim-polyglot`、`csv.vim`。
+- **经典增强**：`vim-repeat`、`undotree`、`vim-signify`、`vim-easy-align`。
 - **Markdown 预览**：`markdown-preview.nvim`。
 - **按键提示**：`vim-which-key`（双击 `<leader><leader>` 弹出菜单）。
 - macOS 下可选**输入法切换**脚本（默认关闭，见 `settings/mappings.vim` 注释）。
@@ -53,6 +54,8 @@ chmod +x vim-manager
 | `./vim-manager uninstall` | 移除脚本创建的符号链接（不删除本仓库源码） |
 | `./vim-manager help` | 帮助 |
 
+`install` / `update` / `status` / `clean` 可附加 `--profile minimal|default|full`。不传参数时使用 `default`；`minimal` 只处理基础编辑与检索插件；`full` 当前等同 `default`。`clean` 始终以完整托管清单保护已安装插件，避免 profile 切换造成误删。
+
 **辅助脚本**（`scripts/`）：
 
 - `scripts/install_dependencies.sh` — 依赖安装
@@ -72,7 +75,7 @@ vim_manager_modules/
 
 ## 插件清单
 
-与 `vim_manager_modules/config.sh` 中 **`PLUGINS`** 保持一致，当前包含但不限于：`vim-airline`、`nerdtree`、`vim-devicons`、`vim-fugitive`、`vim-surround`、`vim-commentary`、`vim-polyglot`、`auto-pairs`、`vim-sensible`、**`fzf.vim`**、**`csv.vim`**、`markdown-preview.nvim`、`vim-which-key`。具体以清单为准。
+与 `vim_manager_modules/config.sh` 中 **`PLUGINS`** 保持一致，当前包含但不限于：`vim-airline`、`nerdtree`、`vim-devicons`、`vim-fugitive`、`vim-surround`、`vim-repeat`、`vim-commentary`、`vim-signify`、`vim-polyglot`、`auto-pairs`、`vim-sensible`、`undotree`、`vim-easy-align`、**`fzf.vim`**、**`csv.vim`**、`markdown-preview.nvim`、`vim-which-key`。具体以清单为准。
 
 ## 仓库目录（节选）
 
@@ -102,13 +105,23 @@ vim_settings/
 | [docs/INDEX.md](docs/INDEX.md) | 文档总索引 |
 | [docs/tutorials/tutorial.md](docs/tutorials/tutorial.md) | 上手与日常维护 |
 | [docs/tutorials/keybindings.md](docs/tutorials/keybindings.md) | 快捷键参考 |
+| [docs/tutorials/local-overrides.md](docs/tutorials/local-overrides.md) | 本地覆盖配置与插件 profile |
 | [docs/legacy/changelog.md](docs/legacy/changelog.md) | 更新摘要与历史变更 |
 | [docs/specs/BLUEPRINT.md](docs/specs/BLUEPRINT.md) | 蓝图与文档边界 |
 | [Agents.md](Agents.md) | 项目与人机协同约定 |
 
 ## 持久化撤销
 
-远端配置将 **`undodir`** 设为 `~/.local/state/vim/undo//`，避免撤销历史落在符号链接的配置仓库路径下。
+远端配置将 Vim 状态目录集中在 `~/.local/state/vim/` 下：撤销历史放在 `undo//`，备份文件放在 `backup//`，视图信息放在 `view//`。`swap//` 目录会预先准备，但默认仍关闭 swapfile，避免恢复提示打扰。
+
+## 本地覆盖
+
+如需保留个人偏好而不改仓库默认配置，可创建本机私有文件：
+
+- `~/.vimrc.before.local`：在默认配置前加载，适合设置 `g:vim_settings_no_autochdir`、`g:vim_settings_keep_trailing_whitespace`、`g:vim_settings_no_restore_cursor`、`g:vim_settings_no_listchars` 等开关。
+- `~/.vimrc.local`：在默认配置后加载，适合覆盖主题、字体、个人映射等。
+
+更多示例见 [本地覆盖配置指南](docs/tutorials/local-overrides.md)。
 
 ## 故障排除
 

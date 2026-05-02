@@ -15,27 +15,32 @@ source "$SCRIPT_DIR/vim_manager_modules/commands.sh"
 
 # --- Main Execution Logic ---
 main() {
-    case "${1:-help}" in
+    local command="${1:-help}"
+    if [ $# -gt 0 ]; then
+        shift
+    fi
+
+    case "$command" in
         deps)
-            do_deps
+            do_deps "$@"
             ;;
         install)
-            do_install
+            do_install "$@"
             ;;
         bootstrap)
-            do_bootstrap
+            do_bootstrap "$@"
             ;;
         update)
-            do_update
+            do_update "$@"
             ;;
         clean)
-            do_clean
+            do_clean "$@"
             ;;
         status)
-            do_status
+            do_status "$@"
             ;;
         uninstall)
-            do_uninstall
+            do_uninstall "$@"
             ;;
         help|*)
             show_help

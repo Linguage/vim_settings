@@ -10,6 +10,11 @@ let g:mapleader = " "
 " 获取当前 vimrc 文件所在目录
 let s:config_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 
+" 加载本机前置覆盖配置（不由仓库管理）
+if filereadable(expand('~/.vimrc.before.local'))
+    source ~/.vimrc.before.local
+endif
+
 " 加载基础配置
 execute 'source ' . s:config_dir . '/settings/basic.vim'
 
@@ -45,9 +50,11 @@ augroup END
 " Fugitive 配置（Git集成）
 nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gd :Gdiff<CR>
+nnoremap <leader>gD :Gdiffsplit<CR>
 nnoremap <leader>gc :Gcommit<CR>
 nnoremap <leader>gb :Gblame<CR>
 nnoremap <leader>gl :Glog<CR>
+nnoremap <leader>gi :Git add -p %<CR>
 nnoremap <leader>gp :Git push<CR>
 nnoremap <leader>gr :Gread<CR>
 nnoremap <leader>gw :Gwrite<CR>
@@ -88,15 +95,12 @@ endfunction
 
 nnoremap <leader>bg :call ToggleBackground()<CR>
 
-" 删除所有trailing whitespace
-function! StripTrailingWhitespace()
-    let l = line(".")
-    let c = col(".")
-    %s/\s\+$//e
-    call cursor(l, c)
-endfun
-
 nnoremap <leader>sw :call StripTrailingWhitespace()<CR>
+
+" 加载本机最终覆盖配置（不由仓库管理）
+if filereadable(expand('~/.vimrc.local'))
+    source ~/.vimrc.local
+endif
 
 " ============================================================================
 " 配置文件结束

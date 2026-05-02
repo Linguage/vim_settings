@@ -10,6 +10,7 @@
 |------|------|
 | [tutorials/tutorial.md](tutorials/tutorial.md) | 从克隆到日常维护；含 `bootstrap.sh` / `vim-manager bootstrap` 与 `install` |
 | [tutorials/keybindings.md](tutorials/keybindings.md) | Leader、窗口、NERDTree、Markdown 预览等按键与命令 |
+| [tutorials/local-overrides.md](tutorials/local-overrides.md) | 本机私有覆盖配置、常用开关与插件 profile |
 
 ## 归档（changelog 与脚本专题）
 

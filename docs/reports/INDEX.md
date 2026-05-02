@@ -9,11 +9,13 @@
 
 ## 当前优先阅读
 
-{待补充}
+- [LazyVim 参考借鉴分析](lazyvim-reference-analysis.md)：对照当前 Vim 配置与本地 LazyVim 笔记，整理可迁移的按键、检索、文件树和 which-key 工作流。
+- [spf13-vim 参考借鉴分析](spf13-vim-reference-analysis.md)：对照经典 Vim 分发版，整理本地覆盖层级、功能开关、状态目录、经典映射与插件候选。
 
 ## 专题经验沉淀
 
-{待补充}
+- [LazyVim 参考借鉴分析](lazyvim-reference-analysis.md)：结论是优先借鉴工作流组织与按键分组，不直接迁移 Neovim/Lua 插件体系。
+- [spf13-vim 参考借鉴分析](spf13-vim-reference-analysis.md)：结论是吸收成熟治理经验和小而稳的经典插件，不迁移 Vundle 与旧补全栈。
 
 ## 使用建议
 

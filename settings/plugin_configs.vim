@@ -85,7 +85,7 @@ let g:webdevicons_enable_airline_tabline = 1
 
 " NERDTree 基本设置
 let NERDTreeShowHidden=1
-let NERDTreeIgnore=['\.pyc$', '\~$', '\.swp$', '\.DS_Store$']
+let NERDTreeIgnore=['^\.git$', '^\.hg$', '^\.svn$', '^\.bzr$', '\.pyc$', '\~$', '\.swp$', '\.swo$', '\.DS_Store$']
 let NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 let NERDTreeShowBookmarks=1
 let NERDTreeWinSize=25
@@ -108,9 +108,28 @@ augroup END
 " NERDTree 快捷键 - 使用<leader>n切换NERDTree
 nnoremap <silent> <leader>n :NERDTreeToggle<CR>
 nnoremap <silent> <leader>nf :NERDTreeFind<CR>
+nnoremap <silent> <leader>ef :NERDTreeFind<CR>
 
 " 在新标签页中打开文件
 let NERDTreeMapOpenInTab='<ENTER>'
+
+" ----------------------------------------------------------------------------
+" Git 标记、撤销树与通用对齐
+" ----------------------------------------------------------------------------
+
+let g:signify_sign_add = '+'
+let g:signify_sign_delete = '_'
+let g:signify_sign_delete_first_line = '^'
+let g:signify_sign_change = '~'
+nnoremap <silent> <leader>gS :SignifyToggle<CR>
+nnoremap <silent> ]h :SignifyHunkNext<CR>
+nnoremap <silent> [h :SignifyHunkPrev<CR>
+
+let g:undotree_SetFocusWhenToggle = 1
+nnoremap <silent> <leader>u :UndotreeToggle<CR>
+
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
 
 " ----------------------------------------------------------------------------
 " FZF 文件选择器配置
@@ -247,6 +266,12 @@ nnoremap <silent> <leader><leader> :WhichKey '<Space>'<CR>
 let g:which_key_map = {}
 let g:which_key_map.f = { 'name': '+file' }
 let g:which_key_map.g = { 'name': '+git' }
+let g:which_key_map.b = { 'name': '+buffer' }
+let g:which_key_map.c = { 'name': '+quickfix' }
+let g:which_key_map.h = { 'name': '+help' }
+let g:which_key_map.m = { 'name': '+markdown' }
+let g:which_key_map.n = { 'name': '+nerdtree' }
+let g:which_key_map.p = { 'name': '+plugin' }
 let g:which_key_map.w = { 'name': '+window' }
 let g:which_key_map.t = { 'name': '+theme' }
 

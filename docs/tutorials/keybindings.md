@@ -30,9 +30,12 @@
 | `<leader>r`     | 重新加载 `vimrc` 文件              |
 | `<leader>/`     | 清除搜索高亮                      |
 | `<C-p>`         | 打开项目级 FZF 文件选择器         |
+| `<leader>ff`    | 打开项目级 FZF 文件选择器         |
 | `<leader>fc`    | 打开命令面板 (`:Commands`)        |
 | `<leader>fb`    | 打开缓冲区面板 (`:Buffers`)       |
 | `<leader>fh`    | 打开命令历史面板 (`:History:`)    |
+| `<leader>fr`    | 打开文件历史面板 (`:History`)     |
+| `<leader>fm`    | 打开标记面板 (`:Marks`)           |
 | `<leader>fe`    | 预填充 `:edit ` 命令              |
 | `<leader>fE`    | 预填充当前目录下的 `:edit` 命令   |
 | `<leader>fq`    | 关闭当前窗口，未保存时弹出确认 (`:confirm q`) |
@@ -64,6 +67,7 @@
 | `j` / `k`       | 在软换行文本中按屏幕行移动         |
 | `H`             | 移动到行首（非空白字符）           |
 | `L`             | 移动到行尾                        |
+| `Y`             | 复制到行尾 (`y$`)                 |
 | `*`             | 搜索当前单词并将命中居中           |
 | `<C-d>` / `<C-u>` | 翻页后保持光标区域居中           |
 | `<leader>d`     | 删除当前行                        |
@@ -75,6 +79,8 @@
 | `<F2>`          | 以当前单词预填充全局替换命令       |
 | `<M-j>` / `<M-k>` | 上下移动当前行或选区            |
 | `<leader>ss`    | 对当前选区内容排序                |
+| `<` / `>`       | （可视模式）缩进后保持选区        |
+| `ga`            | 启动 `vim-easy-align` 交互对齐    |
 
 
 ### 搜索与 quickfix
@@ -83,6 +89,8 @@
 | --------------- | ---------------------------------- |
 | `<leader>gg`    | 用当前单词执行 `rg` 搜索并打开 quickfix |
 | `<leader>gf`    | 输入模式执行 `rg` 搜索并打开 quickfix |
+| `<leader>fg`    | 打开 `fzf.vim` 的 `:Rg` 交互搜索  |
+| `<leader>gC`    | 查找合并冲突标记                  |
 | `<leader>co`    | 打开 quickfix 窗口                |
 | `<leader>cc`    | 关闭 quickfix 窗口                |
 | `<leader>cn`    | 跳到下一条 quickfix 结果并居中     |
@@ -97,14 +105,49 @@
 | 快捷键          | 功能                               |
 | --------------- | ---------------------------------- |
 | `<C-y>`         | 切换 NERDTree 文件浏览器          |
+| `<leader>ee`    | 切换 NERDTree 文件浏览器          |
 | `<leader>n`     | 切换 NERDTree 文件浏览器          |
 | `<leader>nf`    | 在 NERDTree 中定位并显示当前文件  |
+| `<leader>ef`    | 在 NERDTree 中定位并显示当前文件  |
 | `<leader>cd`    | 切换工作目录到当前文件并同步 NERDTree |
 | `<Enter>`       | （在 NERDTree 中）在新标签页打开选中的文件 |
 
+NERDTree 内部常用操作：
+
+- `m`：打开文件系统操作菜单
+- `a`：新增文件或目录
+- `d`：删除节点
+- `r`：重命名节点
+- `c`：复制节点
+- `p`：粘贴节点
+- `u`：返回上一级目录
+- `C`：将当前目录设为文件树根目录
+
 ### Git（vim-fugitive）
 
-未为 Fugitive 配置统一的 `<leader>g*` 快捷键。可在命令行使用例如 `:Git`、`:G`、`:Gdiffsplit` 等（见 `:help fugitive`）。
+| 快捷键          | 功能                               |
+| --------------- | ---------------------------------- |
+| `<leader>gs`    | 打开 Git 状态 (`:Gstatus`)         |
+| `<leader>gd`    | 查看当前文件 diff (`:Gdiff`)       |
+| `<leader>gD`    | 打开 Fugitive diffsplit (`:Gdiffsplit`) |
+| `<leader>gc`    | Git commit (`:Gcommit`)            |
+| `<leader>gb`    | Git blame (`:Gblame`)              |
+| `<leader>gl`    | Git log (`:Glog`)                  |
+| `<leader>gi`    | 对当前文件执行交互式暂存 (`:Git add -p %`) |
+| `<leader>gp`    | Git push (`:Git push`)             |
+| `<leader>gr`    | 从 Git 读取当前文件 (`:Gread`)     |
+| `<leader>gw`    | 写入 Git 索引 (`:Gwrite`)          |
+| `<leader>ge`    | Git edit (`:Gedit`)                |
+| `<leader>gS`    | 切换 `vim-signify` Git 变更标记    |
+| `]h` / `[h`     | 跳到下一个 / 上一个 Git hunk       |
+
+也可在命令行使用 `:Git`、`:G`、`:Gdiffsplit` 等 Fugitive 命令（见 `:help fugitive`）。
+
+### 撤销树
+
+| 快捷键          | 功能                               |
+| --------------- | ---------------------------------- |
+| `<leader>u`     | 切换 Undotree，并自动聚焦撤销树窗口 |
 
 ### Markdown 预览
 
@@ -156,6 +199,11 @@
 - `:Shell` - 在支持时打开内置终端，否则打开外部终端
 - `:LiveGrep` - 输入 ripgrep 搜索模式并将结果送入 quickfix
 - `:ThemePaperColor` / `:ThemeGruvbox` / `:ThemeMolokai` / `:ThemeSolarized` - 切换主题
+- `:W` / `:Q` / `:Wq` / `:QA` - 修正常见大写误输入命令
+- `:w!!` - 通过 `sudo tee` 写入当前文件
+- `:cwd` / `:cd.` - 切换本地工作目录到当前文件所在目录
+
+命令行中输入 `%%` 会展开为当前文件所在目录，便于快速补全同目录路径。
 
 ## 提示
 
@@ -169,3 +217,4 @@
 8. 对高频命令额外提供了直达键：`<leader>fe`、`<leader>fq`、`<leader>fQ`、`<leader>fw`、`<leader>fx`
 9. macOS 输入法自动切换默认关闭；如需启用，请在本地配置中设置 `let g:vim_settings_enable_input_method_switch = 1`
 10. CSV 文件现在由 `csv.vim` 增强处理；如果要重新安装该插件，可运行 `./vim-manager install` 或 `./vim-manager update`
+11. 本机私有覆盖可写入 `~/.vimrc.before.local` 与 `~/.vimrc.local`；常用开关包括 `g:vim_settings_no_autochdir`、`g:vim_settings_keep_trailing_whitespace`、`g:vim_settings_no_restore_cursor`、`g:vim_settings_no_listchars`

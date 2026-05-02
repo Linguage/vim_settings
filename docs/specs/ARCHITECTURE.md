@@ -16,8 +16,8 @@
 
 ## 2. 模块结构
 
-- **`vim-manager`**：`deps` / `bootstrap` / `install` / `update` / `clean` / `status` / `uninstall` / `help`。
-- **`vim_manager_modules/`**：`config.sh`（`VERSION`、`PLUGINS`、`REQUIRED_TOOLS`）、`helpers.sh`、`core_logic.sh`、`commands.sh`。
+- **`vim-manager`**：`deps` / `bootstrap` / `install` / `update` / `clean` / `status` / `uninstall` / `help`；`install`、`update`、`status`、`clean` 支持 `--profile minimal|default|full`。
+- **`vim_manager_modules/`**：`config.sh`（`VERSION`、`PLUGINS`、profile 定义、`REQUIRED_TOOLS`）、`helpers.sh`、`core_logic.sh`、`commands.sh`。
 - **`scripts/`**：`bootstrap.sh`、`install_dependencies.sh`、`cleanup.sh` — 自动化安装入口与杂物清理。
 - **`settings/`**：`basic.vim`、`plugins.vim`、`plugin_configs.vim`、`ui.vim`、`mappings.vim`、`colorscheme.vim` 等。
 - **`colors/`**：配色 Vim 脚本。

@@ -10,7 +10,7 @@ show_help() {
     header "Vim Manager v$VERSION"
     echo "A portable manager for your Vim configuration."
     echo ""
-    echo "Usage: $0 <command>"
+    echo "Usage: $0 <command> [--profile minimal|default|full]"
     echo ""
     echo "Commands:"
     echo "  deps         Install external dependencies such as rg, fzf, and node."
@@ -22,6 +22,44 @@ show_help() {
     echo "  uninstall    Remove symlinks created by install without deleting the repo."
     echo "  help         Show this help message."
     echo ""
+    echo "Plugin profiles:"
+    echo "  minimal      Basic editing and search plugins only."
+    echo "  default      Complete managed plugin set. This is the default."
+    echo "  full         Same as default for now; reserved for future optional plugins."
+    echo ""
+}
+
+parse_profile_args() {
+    ACTIVE_PLUGIN_PROFILE="$DEFAULT_PLUGIN_PROFILE"
+
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            --profile)
+                if [ -z "${2:-}" ]; then
+                    error "--profile requires one of: $(available_plugin_profiles)"
+                    return 1
+                fi
+                ACTIVE_PLUGIN_PROFILE="$2"
+                shift 2
+                ;;
+            --profile=*)
+                ACTIVE_PLUGIN_PROFILE="${1#--profile=}"
+                shift
+                ;;
+            *)
+                error "Unknown option: $1"
+                return 1
+                ;;
+        esac
+    done
+
+    if ! is_valid_plugin_profile "$ACTIVE_PLUGIN_PROFILE"; then
+        error "Unknown plugin profile: $ACTIVE_PLUGIN_PROFILE"
+        info "Available profiles: $(available_plugin_profiles)"
+        return 1
+    fi
+
+    return 0
 }
 
 do_deps() {
@@ -30,6 +68,8 @@ do_deps() {
 }
 
 do_install() {
+    parse_profile_args "$@" || exit 1
+
     header "Starting Installation"
     if ! command_exists git; then
         error "Git is not installed. Please install Git to continue."
@@ -37,19 +77,24 @@ do_install() {
     fi
     
     link_config
-    install_plugins
-    install_plugin_post_steps
+    install_plugins "$ACTIVE_PLUGIN_PROFILE"
+    install_plugin_post_steps "$ACTIVE_PLUGIN_PROFILE"
     success "Installation complete!"
 }
 
 do_bootstrap() {
+    parse_profile_args "$@" || exit 1
+
     header "Starting Full Bootstrap"
     do_deps
-    do_install
+    do_install --profile "$ACTIVE_PLUGIN_PROFILE"
 }
 
 do_update() {
+    parse_profile_args "$@" || exit 1
+
     header "Updating All Managed Plugins"
+    info "Using plugin profile: $ACTIVE_PLUGIN_PROFILE"
     if [ ! -d "$PLUGINS_DIR" ]; then
         error "Plugins directory not found. Have you run 'install' first?"
         exit 1
@@ -58,6 +103,10 @@ do_update() {
     for plugin_info in "${PLUGINS[@]}"; do
         read -r repo_url dir_name <<< "$plugin_info"
         local plugin_path="$PLUGINS_DIR/$dir_name"
+
+        if ! plugin_in_profile "$ACTIVE_PLUGIN_PROFILE" "$dir_name"; then
+            continue
+        fi
 
         if [ -d "$plugin_path/.git" ]; then
             info "Updating '$dir_name'..."
@@ -68,12 +117,15 @@ do_update() {
             warning "Plugin '$dir_name' not found. Run 'install' to install it."
         fi
     done
-    install_plugin_post_steps
+    install_plugin_post_steps "$ACTIVE_PLUGIN_PROFILE"
     success "All plugins have been processed."
 }
 
 do_clean() {
+    parse_profile_args "$@" || exit 1
+
     header "Cleaning Unmanaged Plugins"
+    info "Clean uses the full managed plugin manifest; profile '$ACTIVE_PLUGIN_PROFILE' will not make installed managed plugins unmanaged."
     if [ ! -d "$PLUGINS_DIR" ]; then
         info "Plugins directory does not exist. Nothing to clean."
         exit 0
@@ -121,7 +173,10 @@ do_clean() {
 }
 
 do_status() {
+    parse_profile_args "$@" || exit 1
+
     header "Checking Configuration Status"
+    info "Using plugin profile: $ACTIVE_PLUGIN_PROFILE"
 
     # --- Check External Tools ---
     info "1. Checking External Tools..."
@@ -181,6 +236,10 @@ do_status() {
     for plugin_info in "${PLUGINS[@]}"; do
         read -r repo_url dir_name <<< "$plugin_info"
         local plugin_path="$PLUGINS_DIR/$dir_name"
+
+        if ! plugin_in_profile "$ACTIVE_PLUGIN_PROFILE" "$dir_name"; then
+            continue
+        fi
 
         if [ -d "$plugin_path/.git" ]; then
             local commit=$(cd "$plugin_path" && git rev-parse --short HEAD)

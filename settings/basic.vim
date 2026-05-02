@@ -57,8 +57,6 @@ set encoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8,gbk,gb2312,cp936,ucs-bom,big5,latin1
 set fileformats=unix,dos,mac
-set nobackup
-set nowritebackup
 set noswapfile
 set belloff=all
 set breakindent
@@ -76,15 +74,40 @@ if has('macunix')
     endif
 endif
 
+" 将 Vim 状态文件集中到用户 state 目录，避免污染项目目录。
+let s:state_root = expand('~/.local/state/vim')
+let s:state_dirs = {
+            \ 'backup': s:state_root . '/backup//',
+            \ 'swap': s:state_root . '/swap//',
+            \ 'undo': s:state_root . '/undo//',
+            \ 'view': s:state_root . '/view//'
+            \ }
+
+for s:state_dir in values(s:state_dirs)
+    if !isdirectory(s:state_dir)
+        call mkdir(s:state_dir, 'p', 0700)
+    endif
+endfor
+
+" 启用集中备份；swap 目录已准备好，但默认仍关闭 swapfile。
+set backup
+set writebackup
+let &backupdir = s:state_dirs.backup
+
+if exists('+directory')
+    let &directory = s:state_dirs.swap
+endif
+
+if exists('+viewdir')
+    let &viewdir = s:state_dirs.view
+endif
+
+set viewoptions=folds,cursor,curdir
+
 " 启用持久化撤销
 if has('persistent_undo')
-    " Keep undo history outside the symlinked config repo.
-    let s:undo_dir = expand('~/.local/state/vim/undo//')
     set undofile
-    let &undodir = s:undo_dir
-    if !isdirectory(s:undo_dir)
-        call mkdir(s:undo_dir, 'p', 0700)
-    endif
+    let &undodir = s:state_dirs.undo
 endif
 
 set undolevels=1000
@@ -119,16 +142,48 @@ if executable('rg')
     set grepformat=%f:%l:%c:%m
 endif
 
+function! s:IsNormalFileBuffer() abort
+    return &buftype ==# '' && expand('%') !=# ''
+endfunction
+
+function! s:RestoreCursorPosition() abort
+    if exists('g:vim_settings_no_restore_cursor') || &filetype ==# 'gitcommit'
+        return
+    endif
+
+    let l:last_line = line("'\"")
+    if l:last_line > 1 && l:last_line <= line('$')
+        silent! normal! g`"
+    endif
+endfunction
+
+function! StripTrailingWhitespace() abort
+    let l:search = @/
+    let l:line = line('.')
+    let l:col = col('.')
+    %s/\s\+$//e
+    let @/ = l:search
+    call cursor(l:line, l:col)
+endfunction
+
 augroup vim_settings_basic
     autocmd!
     " 文件修改检测
     autocmd FocusGained * checktime
 
     " 删除末尾空格
-    autocmd BufWritePre * %s/\s\+$//e
+    autocmd BufWritePre * if !exists('g:vim_settings_keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
 
     " 自动切换到文件目录
-    autocmd BufEnter * if bufname('') !~ '^\[A-Za-z0-9\]*://' | lcd %:p:h | endif
+    autocmd BufEnter * if !exists('g:vim_settings_no_autochdir') && bufname('') !~ '^\[A-Za-z0-9\]*://' | lcd %:p:h | endif
+
+    " 恢复上次光标位置；Git commit message 始终从第一行开始。
+    autocmd BufWinEnter * if <SID>IsNormalFileBuffer() | call <SID>RestoreCursorPosition() | endif
+    autocmd FileType gitcommit call cursor(1, 1)
+
+    " 保存和恢复窗口视图信息（折叠、光标等）。
+    autocmd BufWinLeave * if <SID>IsNormalFileBuffer() | silent! mkview | endif
+    autocmd BufWinEnter * if <SID>IsNormalFileBuffer() | silent! loadview | endif
 
     " Markdown 更适合按自然语言阅读，启用软换行
     autocmd FileType markdown,mkd,pandoc setlocal wrap linebreak
@@ -170,5 +225,15 @@ endfunction
 
 command! Shell call s:OpenShell()
 command! LiveGrep call s:LiveGrep()
+command! -bang -nargs=* -complete=file W write<bang> <args>
+command! -bang -nargs=* -complete=file Wq wq<bang> <args>
+command! -bang -nargs=* -complete=file WQ wq<bang> <args>
+command! -bang Q quit<bang>
+command! -bang QA qall<bang>
+command! -bang Qa qall<bang>
+cmap w!! w !sudo tee % >/dev/null
+cnoremap <expr> %% getcmdtype() ==# ':' ? fnameescape(expand('%:h')) . '/' : '%%'
+cnoreabbrev <expr> cwd ((getcmdtype()==':') && (getcmdline() =~# '^\s*cwd\>')) ? 'lcd %:p:h' : 'cwd'
+cnoreabbrev <expr> cd. ((getcmdtype()==':') && (getcmdline() =~# '^\s*cd\.\>')) ? 'lcd %:p:h' : 'cd.'
 cnoreabbrev <expr> shell ((getcmdtype()==':') && (getcmdline() =~# '^\s*shell\>')) ? 'Shell' : 'shell'
 nnoremap <silent> <leader>sh :Shell<CR>

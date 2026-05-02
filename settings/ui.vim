@@ -8,8 +8,10 @@ if has('termguicolors')
 endif
 
 " 显示不可见字符（美化空白字符显示）
-set list
-set listchars=tab:▸\ ,trail:•,extends:❯,precedes:❮,nbsp:×,eol:¬
+if !exists('g:vim_settings_no_listchars')
+    set list
+    set listchars=tab:▸\ ,trail:•,extends:❯,precedes:❮,nbsp:×,eol:¬
+endif
 
 " 高亮当前列
 set cursorcolumn

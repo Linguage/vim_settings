@@ -29,9 +29,12 @@ nnoremap <leader>f <Nop>
 
 " 使用项目文件选择器查找文件
 nnoremap <silent> <C-p> :ProjectFiles<CR>
+nnoremap <silent> <leader>ff :ProjectFiles<CR>
 nnoremap <silent> <leader>fc :Commands<CR>
 nnoremap <silent> <leader>fb :Buffers<CR>
 nnoremap <silent> <leader>fh :History:<CR>
+nnoremap <silent> <leader>fr :History<CR>
+nnoremap <silent> <leader>fm :Marks<CR>
 nnoremap <silent> <leader>fe :call feedkeys(':edit ', 'nt')<CR>
 nnoremap <silent> <leader>fE :call feedkeys(':edit %:h/', 'nt')<CR>
 nnoremap <silent> <leader>fq :confirm q<CR>
@@ -76,6 +79,7 @@ nnoremap [q :cprevious<CR>zz
 " 行尾行首快速移动
 nnoremap H g^
 nnoremap L g_
+nnoremap Y y$
 
 " 插入模式下的快捷键
 inoremap <C-h> <Left>
@@ -106,6 +110,8 @@ nnoremap <leader>d dd
 " 可视模式粘贴后保持选区
 vnoremap p pgv<Esc>
 vnoremap <leader>ss :sort<CR>
+vnoremap < <gv
+vnoremap > >gv
 
 " 上下移动行或选区
 nnoremap <M-j> :m .+1<CR>==
@@ -123,9 +129,12 @@ nnoremap Q <nop>
 " ripgrep 项目搜索
 nnoremap <silent> <leader>gg :silent grep! <C-R><C-W> .<CR>:copen<CR>:redraw!<CR>
 nnoremap <silent> <leader>gf :LiveGrep<CR>
+nnoremap <leader>fg :Rg<Space>
+nnoremap <silent> <leader>gC /\v^[<\|=>]{7}( .*\|$)<CR>
 
 " 文件树工作流
 nnoremap <silent> <C-y> :NERDTreeToggle<CR>
+nnoremap <silent> <leader>ee :NERDTreeToggle<CR>
 nnoremap <silent> <leader>cd :cd %:h<CR>:NERDTreeCWD<CR>
 
 " ============================================================================
