@@ -166,13 +166,25 @@ function! StripTrailingWhitespace() abort
     call cursor(l:line, l:col)
 endfunction
 
+function! s:ShouldStripTrailingWhitespace() abort
+    if exists('g:vim_settings_keep_trailing_whitespace')
+        return 0
+    endif
+
+    if index(['markdown', 'mkd', 'pandoc', 'diff', 'patch'], &filetype) >= 0
+        return 0
+    endif
+
+    return 1
+endfunction
+
 augroup vim_settings_basic
     autocmd!
     " 文件修改检测
     autocmd FocusGained * checktime
 
     " 删除末尾空格
-    autocmd BufWritePre * if !exists('g:vim_settings_keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
+    autocmd BufWritePre * if <SID>ShouldStripTrailingWhitespace() | call StripTrailingWhitespace() | endif
 
     " 自动切换到文件目录
     autocmd BufEnter * if !exists('g:vim_settings_no_autochdir') && bufname('') !~ '^\[A-Za-z0-9\]*://' | lcd %:p:h | endif

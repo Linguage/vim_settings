@@ -97,6 +97,39 @@
 | `<leader>cp`    | 跳到上一条 quickfix 结果并居中     |
 | `]q` / `[q`     | 在 quickfix 结果中前后跳转         |
 
+### LSP、诊断与格式化
+
+默认 profile 安装 `vim-lsp`、`vim-lsp-settings`、`asyncomplete` 与 `ALE` 后，以下快捷键在支持 LSP 的 buffer 中可用。
+
+| 快捷键          | 功能                               |
+| --------------- | ---------------------------------- |
+| `gd`            | 跳转到定义                         |
+| `gr`            | 查找引用                           |
+| `gi`            | 跳转到实现                         |
+| `gt`            | 跳转到类型定义                     |
+| `K`             | 查看悬浮文档                       |
+| `[d` / `]d`     | 跳到上一条 / 下一条诊断            |
+| `<leader>lr`    | 重命名符号                         |
+| `<leader>la`    | 执行 code action                   |
+| `<leader>lf`    | 格式化当前 buffer                  |
+| `<leader>lo`    | 查看当前文档符号 / outline         |
+| `<leader>ls`    | 搜索工作区符号                     |
+
+插入模式下：
+
+| 快捷键          | 功能                               |
+| --------------- | ---------------------------------- |
+| `<Tab>`         | 补全菜单中选择下一项；无菜单时输入 Tab |
+| `<S-Tab>`       | 补全菜单中选择上一项               |
+| `<C-Space>`     | 强制刷新异步补全                   |
+| `<CR>`          | 补全菜单打开时确认当前项           |
+
+常用命令：
+
+- `:CodeFormat`：优先使用 LSP 格式化；无 LSP 格式化时回退到 ALE fix。
+- `:LspStatus`：查看 LSP 客户端状态。
+- `:ALEInfo`：查看 ALE 对当前 buffer 的诊断、linter 与 fixer 信息。
+
 
 ## 插件快捷键
 
@@ -158,6 +191,17 @@ NERDTree 内部常用操作：
 | `<leader>mp`    | 切换 Markdown 预览开关            |
 | `<leader>mc`    | 关闭 Markdown 预览                |
 
+### 测试工作流
+
+默认使用 `vim-test` 与 Vim 内置 `:terminal` 运行测试。
+
+| 快捷键          | 功能                               |
+| --------------- | ---------------------------------- |
+| `<leader>tt`    | 运行光标附近的测试                 |
+| `<leader>tf`    | 运行当前文件测试                   |
+| `<leader>tn`    | 重新运行最近一次测试               |
+| `<leader>tv`    | 跳转到测试文件                     |
+
 ### CSV 工作流
 
 `csv.vim` 没有占用新的全局快捷键，但在打开 `csv` / `tsv` 文件后会自动按列排列，并高亮当前列。
@@ -198,6 +242,7 @@ NERDTree 内部常用操作：
 
 - `:Shell` - 在支持时打开内置终端，否则打开外部终端
 - `:LiveGrep` - 输入 ripgrep 搜索模式并将结果送入 quickfix
+- `:CodeFormat` - 格式化当前 buffer
 - `:ThemePaperColor` / `:ThemeGruvbox` / `:ThemeMolokai` / `:ThemeSolarized` - 切换主题
 - `:W` / `:Q` / `:Wq` / `:QA` - 修正常见大写误输入命令
 - `:w!!` - 通过 `sudo tee` 写入当前文件
@@ -218,3 +263,4 @@ NERDTree 内部常用操作：
 9. macOS 输入法自动切换默认关闭；如需启用，请在本地配置中设置 `let g:vim_settings_enable_input_method_switch = 1`
 10. CSV 文件现在由 `csv.vim` 增强处理；如果要重新安装该插件，可运行 `./vim-manager install` 或 `./vim-manager update`
 11. 本机私有覆盖可写入 `~/.vimrc.before.local` 与 `~/.vimrc.local`；常用开关包括 `g:vim_settings_no_autochdir`、`g:vim_settings_keep_trailing_whitespace`、`g:vim_settings_no_restore_cursor`、`g:vim_settings_no_listchars`
+12. 如需关闭默认 IDE 层，可在 `~/.vimrc.before.local` 中设置 `let g:vim_settings_no_ide = 1`

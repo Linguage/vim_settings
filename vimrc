@@ -27,6 +27,9 @@ execute 'source ' . s:config_dir . '/settings/colorscheme.vim'
 " 加载快捷键映射
 execute 'source ' . s:config_dir . '/settings/mappings.vim'
 
+" 加载代码编辑增强配置（在插件 runtimepath 前设置默认变量）
+execute 'source ' . s:config_dir . '/settings/code_editing.vim'
+
 " 加载插件管理配置
 execute 'source ' . s:config_dir . '/settings/plugins.vim'
 

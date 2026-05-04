@@ -33,6 +33,13 @@ PLUGINS=(
     "https://github.com/chrisbra/csv.vim.git csv.vim"
     "https://github.com/iamcco/markdown-preview.nvim.git markdown-preview.nvim"
     "https://github.com/liuchengxu/vim-which-key.git vim-which-key"
+    "https://github.com/prabirshrestha/vim-lsp.git vim-lsp"
+    "https://github.com/mattn/vim-lsp-settings.git vim-lsp-settings"
+    "https://github.com/prabirshrestha/asyncomplete.vim.git asyncomplete.vim"
+    "https://github.com/prabirshrestha/asyncomplete-lsp.vim.git asyncomplete-lsp.vim"
+    "https://github.com/dense-analysis/ale.git ale"
+    "https://github.com/editorconfig/editorconfig-vim.git editorconfig-vim"
+    "https://github.com/vim-test/vim-test.git vim-test"
 )
 
 # --- Plugin Profiles ---
@@ -96,6 +103,20 @@ REQUIRED_TOOLS=(
     "rg"
     "fzf"
     "node"
+    "npm"
+)
+
+IDE_TOOLS=(
+    "shellcheck"
+    "shfmt"
+)
+
+NPM_IDE_PACKAGES=(
+    "bash-language-server"
+    "vim-language-server"
+    "vscode-langservers-extracted"
+    "yaml-language-server"
+    "markdownlint-cli2"
 )
 
 # --- Colors and Formatting ---

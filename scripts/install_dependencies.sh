@@ -15,7 +15,7 @@ install_macos() {
         exit 1
     fi
 
-    local packages=(git vim ripgrep fzf node)
+    local packages=(git vim ripgrep fzf node shellcheck shfmt)
     info "Installing macOS dependencies with Homebrew: ${packages[*]}"
     brew install "${packages[@]}"
 
@@ -33,20 +33,34 @@ install_macos() {
 install_apt() {
     info "Installing Linux dependencies with apt..."
     sudo apt-get update
-    sudo apt-get install -y git vim ripgrep fzf nodejs npm
+    sudo apt-get install -y git vim ripgrep fzf nodejs npm shellcheck shfmt
     warning "Install a Nerd Font separately if you want file-tree and airline icons."
 }
 
 install_dnf() {
     info "Installing Linux dependencies with dnf..."
-    sudo dnf install -y git vim ripgrep fzf nodejs npm
+    sudo dnf install -y git vim ripgrep fzf nodejs npm ShellCheck shfmt
     warning "Install a Nerd Font separately if you want file-tree and airline icons."
 }
 
 install_pacman() {
     info "Installing Linux dependencies with pacman..."
-    sudo pacman -Sy --needed git vim ripgrep fzf nodejs npm
+    sudo pacman -Sy --needed git vim ripgrep fzf nodejs npm shellcheck shfmt
     warning "Install a Nerd Font separately if you want file-tree and airline icons."
+}
+
+install_npm_ide_packages() {
+    if ! command_exists npm; then
+        warning "npm was not found; skipping LSP and Markdown language tools."
+        return 0
+    fi
+
+    info "Installing npm language tools: ${NPM_IDE_PACKAGES[*]}"
+    if npm install -g "${NPM_IDE_PACKAGES[@]}"; then
+        success "npm language tools installed."
+    else
+        warning "Failed to install npm language tools. Vim still works; run the npm command manually if IDE features are incomplete."
+    fi
 }
 
 main() {
@@ -73,6 +87,8 @@ main() {
             exit 1
             ;;
     esac
+
+    install_npm_ide_packages
 
     success "External dependencies installed."
     echo ""

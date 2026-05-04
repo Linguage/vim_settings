@@ -38,9 +38,17 @@ if isdirectory(s:plugin_dir)
     " Markdown preview plugin
     execute 'set runtimepath+=' . s:plugin_dir . '/markdown-preview.nvim'
     execute 'set runtimepath+=' . s:plugin_dir . '/vim-which-key'
-    
 
-    
+    if !exists('g:vim_settings_no_ide') || !g:vim_settings_no_ide
+        execute 'set runtimepath+=' . s:plugin_dir . '/editorconfig-vim'
+        execute 'set runtimepath+=' . s:plugin_dir . '/vim-lsp'
+        execute 'set runtimepath+=' . s:plugin_dir . '/vim-lsp-settings'
+        execute 'set runtimepath+=' . s:plugin_dir . '/asyncomplete.vim'
+        execute 'set runtimepath+=' . s:plugin_dir . '/asyncomplete-lsp.vim'
+        execute 'set runtimepath+=' . s:plugin_dir . '/ale'
+        execute 'set runtimepath+=' . s:plugin_dir . '/vim-test'
+    endif
+
     " 加载插件帮助文档
     silent! helptags ALL
 endif

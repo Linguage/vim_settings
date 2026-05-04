@@ -11,9 +11,12 @@
 - 读者向：`docs/INDEX.md`（总索引；根目录仅存此文）；子目录含 `tutorials/`（上手与快捷键）、`legacy/`（含 changelog 与 `legacy/internal/` 归档）、`work-notes/` 等，与根 README、`c.md` 互链
 - 在 `BLUEPRINT.md` / `ARCHITECTURE.md` 中补齐验收标准与技术决策占位内容
 
-## Phase 1: {待命名}
+## Phase 1: 代码编辑 IDE 化升级
 
-- {待补充}
+- 默认 profile 引入 Vim 原生 LSP、异步补全、诊断、格式化与测试入口。
+- `minimal` profile 继续保持轻量编辑与检索，不要求 IDE 插件或语言服务器。
+- 优先覆盖 Shell、Vimscript、JSON、YAML、Markdown 等通用脚本与配置文件编辑场景。
+- 在制任务见 `docs/jobs/code-editing-ide-upgrade.md`。
 
 ---
 

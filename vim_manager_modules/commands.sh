@@ -217,13 +217,33 @@ do_status() {
         fi
     done
 
-    if command_exists yarn || command_exists npm; then
-        if command_exists yarn; then
-            success "Installed: yarn"
-        fi
+    if [ "$ACTIVE_PLUGIN_PROFILE" != "minimal" ]; then
+        info "Checking optional IDE tools..."
+        for tool in "${IDE_TOOLS[@]}"; do
+            if command_exists "$tool"; then
+                success "Installed: $tool"
+            else
+                warning "Missing:   $tool"
+            fi
+        done
+
         if command_exists npm; then
-            success "Installed: npm"
+            local npm_prefix
+            npm_prefix="$(npm prefix -g 2>/dev/null || true)"
+            for package_name in "${NPM_IDE_PACKAGES[@]}"; do
+                if [ -n "$npm_prefix" ] && [ -d "$npm_prefix/lib/node_modules/$package_name" ]; then
+                    success "Installed npm package: $package_name"
+                else
+                    warning "Missing npm package:   $package_name"
+                fi
+            done
         fi
+    fi
+
+    if command_exists yarn; then
+        success "Installed: yarn"
+    elif command_exists npm; then
+        info "npm is available; yarn is optional."
     else
         warning "Missing:   npm or yarn (needed for markdown-preview.nvim)"
     fi

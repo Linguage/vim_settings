@@ -288,9 +288,10 @@ let g:which_key_map.g = { 'name': '+git' }
 let g:which_key_map.b = { 'name': '+buffer' }
 let g:which_key_map.c = { 'name': '+quickfix' }
 let g:which_key_map.h = { 'name': '+help' }
+let g:which_key_map.l = { 'name': '+lsp/code' }
 let g:which_key_map.p = { 'name': '+plugin' }
 let g:which_key_map.w = { 'name': '+window' }
-let g:which_key_map.t = { 'name': '+theme' }
+let g:which_key_map.t = { 'name': '+test' }
 
 if s:HasPlugin('markdown-preview.nvim')
     let g:which_key_map.m = { 'name': '+markdown' }
