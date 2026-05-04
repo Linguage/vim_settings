@@ -9,4 +9,5 @@
 ## 按日期 / 主题浏览
 
 - [01_ORIGIN_MERGE_AND_DOCS_GOVERNANCE_SUMMARY_2026-05-02.md](01_ORIGIN_MERGE_AND_DOCS_GOVERNANCE_SUMMARY_2026-05-02.md) — 上游合并、`vim-manager`/v3.3 对齐、文档治理与孤儿插件清理（会话系列小结，2026-05-02）
+- [02_CODE_EDITING_IDE_UPGRADE_SUMMARY_2026-05-04.md](02_CODE_EDITING_IDE_UPGRADE_SUMMARY_2026-05-04.md) — 默认 profile 的 IDE 化升级：LSP、补全、诊断、格式化、测试入口与自动部署接线（2026-05-04）
 - [update-summary.md](update-summary.md) — 约 2025-06-16 的文档批量更新纪要（含后续路径变更说明）
